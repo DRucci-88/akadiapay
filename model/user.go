@@ -20,5 +20,5 @@ type UserStatus string
 
 const (
 	UserStatusActive   = "ACTIVE"
-	UserStatusDeactive = "DEACTIVE"
+	UserStatusInactive = "INACTIVE"
 )
