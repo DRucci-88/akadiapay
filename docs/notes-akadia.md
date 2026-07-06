@@ -8,6 +8,7 @@ Akadia
 - AkadiaCourse
 
 Modular Monolith
+DDD Architecture
 
 ## Packages
 
@@ -116,3 +117,61 @@ Day 4
 - Demo data
 - Presentation
 - Polish
+
+
+## Project Structure
+```txt
+cmd/
+    api/
+app/
+internal/
+    auth/
+    master/
+        dto/
+        handler/
+        repository/
+        service/
+    payment/
+        dto/
+        handler/
+        repository/
+        service/
+    shared/
+        config/
+        helper/
+        validator/
+        middleware/
+        pagination/
+        response/
+        errors/
+model/
+    generated/
+migration/
+seeder/
+docs/
+bruno/
+docker/
+scripts/
+test/
+```
+
+## Handler
+
+```txt
+POST /login
+POST /schools
+GET /schools
+PUT /schools
+DELETE /schools
+POST /students
+GET /students
+POST /payment-products
+GET /payment-products
+```
+
+## Flow Development
+domain
+repository
+service
+dto factory
+handler

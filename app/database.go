@@ -1,6 +1,7 @@
 package app
 
 import (
+	"akadia/internal/shared/helper"
 	"akadia/seeder"
 
 	"gorm.io/driver/postgres"
@@ -16,6 +17,10 @@ func NewDatabase() *gorm.DB {
 	})
 	if err != nil {
 		panic("Database Not Connected " + err.Error())
+	}
+
+	if err := helper.CreateSchemas(db); err != nil {
+		panic("Schema Failed Create" + err.Error())
 	}
 
 	if err := db.AutoMigrate(
