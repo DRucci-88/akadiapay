@@ -24,6 +24,9 @@ go get -u github.com/swaggo/files ;
 go get golang.org/x/sync/errgroup ;
 go get github.com/brianvoe/gofakeit/v7 ;
 go get github.com/joho/godotenv ;
+go get gorm.io/cli/gorm/field ;
+go get gorm.io/cli/gorm/genconfig ;
+
 
 go install github.com/google/wire/cmd/wire@latest
 go install github.com/swaggo/swag/cmd/swag@latest

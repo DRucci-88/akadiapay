@@ -19,11 +19,11 @@ type PaymentOrder struct {
 	OrderNumber string    `gorm:"type:varchar(50);not null;uniqueIndex:uk_payment_order_number"`
 	OrderDate   time.Time `gorm:"not null"`
 
-	TotalAmount     float64            `gorm:"type:numeric(18,2);not null"`
-	Status          PaymentOrderStatus `gorm:"type:varchar(20);default:PENDING;not null"`
-	PaymentMethod   PaymentMethod      `gorm:"type:varchar(30);not null"`
-	ReferenceNumber *string            `gorm:"type:varchar(100)"`
-	Notes           string             `gorm:"type:text"`
+	TotalAmount     float64                   `gorm:"type:numeric(18,2);not null"`
+	Status          PaymentOrderStatus        `gorm:"type:varchar(20);default:PENDING;not null"`
+	PaymentMethod   PaymentOrderPaymentMethod `gorm:"type:varchar(30);not null"`
+	ReferenceNumber *string                   `gorm:"type:varchar(100)"`
+	Notes           string                    `gorm:"type:text"`
 
 	BaseModel
 
@@ -43,12 +43,12 @@ const (
 	PaymentOrderStatusExpired   PaymentOrderStatus = "EXPIRED"
 )
 
-type PaymentMethod string
+type PaymentOrderPaymentMethod string
 
 const (
-	PaymentMethodCash           PaymentMethod = "CASH"
-	PaymentMethodBankTransfer   PaymentMethod = "BANK_TRANSFER"
-	PaymentMethodVirtualAccount PaymentMethod = "VIRTUAL_ACCOUNT"
-	PaymentMethodQRIS           PaymentMethod = "QRIS"
-	PaymentMethodCreditCard     PaymentMethod = "CREDIT_CARD"
+	PaymentMethodCash           PaymentOrderPaymentMethod = "CASH"
+	PaymentMethodBankTransfer   PaymentOrderPaymentMethod = "BANK_TRANSFER"
+	PaymentMethodVirtualAccount PaymentOrderPaymentMethod = "VIRTUAL_ACCOUNT"
+	PaymentMethodQRIS           PaymentOrderPaymentMethod = "QRIS"
+	PaymentMethodCreditCard     PaymentOrderPaymentMethod = "CREDIT_CARD"
 )
