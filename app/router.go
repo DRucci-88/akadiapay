@@ -2,7 +2,7 @@ package app
 
 import (
 	"akadia/domain"
-	"akadia/plarform/middleware"
+	"akadia/internal/platform/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +19,7 @@ func NewRouter(
 
 	authApi := r.Group("/auth")
 	authApi.POST("/login", auth.Login)
-	authApi.GET("/profile", auth.Profile)
+	authApi.GET("/profile", m.JWT, auth.Profile)
 
 	return r
 }

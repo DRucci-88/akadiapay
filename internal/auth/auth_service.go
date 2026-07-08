@@ -2,10 +2,9 @@ package auth
 
 import (
 	"akadia/domain"
+	"akadia/internal/platform/security"
 	"akadia/internal/shared"
-	"akadia/internal/shared/helper"
 	"akadia/model"
-	"akadia/plarform/security"
 	"context"
 	"log"
 
@@ -28,6 +27,7 @@ func NewAuthService(
 	tenantService domain.TenantService,
 ) domain.AuthService {
 	return &authServiceImpl{
+		appConfig:             appConfig,
 		userService:           userService,
 		userTenantRoleService: userTenantRoleService,
 		studentService:        studentService,
@@ -41,11 +41,11 @@ func (s *authServiceImpl) Login(
 ) ([]domain.AuthLoginResponse, error) {
 	user, err := s.userService.FirstByEmail(ctx, req.Email)
 	if err != nil {
-		return nil, shared.ErrAuthLogin
+		return nil, shared.ErrInvalidCredential
 	}
 
-	if !helper.CheckPasswordHash(req.Password, user.Password) {
-		return nil, shared.ErrAuthLogin
+	if !security.CheckPasswordHash(req.Password, user.Password) {
+		return nil, shared.ErrInvalidCredential
 	}
 
 	log.Printf("User %+v", user)
@@ -67,7 +67,7 @@ func (s *authServiceImpl) Login(
 			studentID = &student.ID
 		}
 
-		token, err := helper.GenerateJWT(jwtSecretKey, temp.User.Email, temp.UserID, temp.TenantID, studentID, temp.Role.Code)
+		token, err := security.GenerateJWT(jwtSecretKey, temp.User.Email, temp.UserID, temp.TenantID, studentID, temp.Role.Code)
 
 		if err != nil {
 			return make([]domain.AuthLoginResponse, 0), err

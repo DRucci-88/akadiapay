@@ -1,6 +1,7 @@
 package app
 
 import (
+	"akadia/domain"
 	"akadia/model"
 	"akadia/seeder"
 	"fmt"
@@ -10,8 +11,11 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func NewDatabase() *gorm.DB {
-	dsn := "postgres://postgres:12345678@localhost:5432/ujian2_rematch?sslmode=disable"
+func NewDatabase(
+	appConfig domain.AppConfigProvider,
+) *gorm.DB {
+	// dsn := "postgres://postgres:12345678@localhost:5432/ujian2_rematch?sslmode=disable"
+	dsn := appConfig.DB_DSN()
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),

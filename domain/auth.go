@@ -1,12 +1,18 @@
 package domain
 
 import (
+	"akadia/internal/platform/security"
 	"akadia/model"
-	"akadia/plarform/security"
 	"context"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+)
+
+type ContextKey string
+
+const (
+	ContextKeyAuth ContextKey = "auth"
 )
 
 type AuthHandler interface {

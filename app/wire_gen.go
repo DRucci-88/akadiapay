@@ -10,7 +10,7 @@ import (
 	"akadia/internal/auth"
 	"akadia/internal/master/repository"
 	"akadia/internal/master/service"
-	"akadia/plarform/middleware"
+	"akadia/internal/platform/middleware"
 )
 
 // Injectors from wire.go:
@@ -19,7 +19,7 @@ func IntializedApplication() *Application {
 	appConfig := LoadConfig()
 	appConfigProvider := NewAppConfig(appConfig)
 	middlewareManager := middleware.NewMiddlewareManager(appConfigProvider)
-	db := NewDatabase()
+	db := NewDatabase(appConfigProvider)
 	repositoryManagerMaster := repository.NewAuthRepositoryManagerMaster(db)
 	userService := service.NewUserService(repositoryManagerMaster)
 	userTenantRoleService := service.NewUserTenantRoleService(repositoryManagerMaster)

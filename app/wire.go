@@ -7,7 +7,7 @@ import (
 	"akadia/internal/auth"
 	"akadia/internal/master/repository"
 	"akadia/internal/master/service"
-	"akadia/plarform/middleware"
+	"akadia/internal/platform/middleware"
 
 	"github.com/google/wire"
 )

@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"akadia/domain"
+	"akadia/internal/platform/security"
 	"akadia/internal/shared"
-	"akadia/plarform/security"
 	"log"
 	"net/http"
 	"strings"
@@ -63,7 +63,7 @@ func NewJWTMiddleware(
 		}
 		log.Println(authContext)
 
-		c.Set("auth", authContext)
+		c.Set(domain.ContextKeyAuth, authContext)
 		c.Next()
 	}
 }

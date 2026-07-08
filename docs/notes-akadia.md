@@ -8,7 +8,7 @@ Akadia
 - AkadiaCourse
 
 Modular Monolith
-DDD Architecture
+Domain Driven Design Architecture
 
 ## Packages
 
@@ -95,25 +95,25 @@ payment
 
 ## Sprint 4 Days
 
-Day 1
+
 - Architecture & schemas (master, payment)
 - Authentication & RBAC
 - School, Student, Payment Product CRUD
 - Seeder
 
-Day 2
+
 - Student Obligation
 - Payment Policy (minimum/full/partial)
 - Obligation assignment
 - Outstanding bill listing
 
-Day 3
+
 - Invoice creation
 - Payment flow (simulated)
 - Ledger posting
 - Remaining balance calculation
 
-Day 4
+
 - Docker
 - Tests (focus on payment policy and obligation logic to help reach the coverage target)
 - README

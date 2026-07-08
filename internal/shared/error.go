@@ -4,9 +4,9 @@ import "errors"
 
 var (
 	/// Auth
-	ErrAuthLogin        = errors.New("Email or Password is wrong")
-	ErrAuthUnauthorized = errors.New("Unauthorized")
-	ErrAuthTokenExpired = errors.New("Token is Expired")
+	ErrInvalidCredential = errors.New("Email or Password is wrong")
+	ErrAuthUnauthorized  = errors.New("Unauthorized")
+	ErrAuthTokenExpired  = errors.New("Token is Expired")
 
 	/// User
 	ErrUserNotFound = errors.New("User not found")

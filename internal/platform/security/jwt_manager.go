@@ -1,8 +1,7 @@
-package helper
+package security
 
 import (
 	"akadia/model"
-	"akadia/plarform/security"
 
 	"time"
 
@@ -31,7 +30,7 @@ func GenerateJWT(
 	roleCode model.RoleCode,
 ) (string, error) {
 
-	claims := security.JWTClaims{
+	claims := JWTClaims{
 		UserID:    userID,
 		TenantID:  tenantID,
 		StudentID: studentID,

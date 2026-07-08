@@ -2,8 +2,8 @@ package auth
 
 import (
 	"akadia/domain"
+	"akadia/internal/platform/security"
 	"akadia/internal/shared"
-	"akadia/plarform/security"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -38,7 +38,7 @@ func (h *authHandlerImpl) Login(c *gin.Context) {
 }
 
 func (h *authHandlerImpl) Profile(c *gin.Context) {
-	authContextValue, exist := c.Get("auth")
+	authContextValue, exist := c.Get(domain.ContextKeyAuth)
 
 	if !exist {
 		c.JSON(http.StatusUnauthorized, gin.H{
