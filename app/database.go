@@ -38,14 +38,21 @@ func NewDatabase(
 	}
 
 	if err := db.AutoMigrate(
-	// &model.User{},
-	// &model.Attendance{},
-	// &model.Department{},
-	// &model.Employee{},
-	// &model.Leave{},
-	// &model.Position{},
-	// &model.Salary{},
-	// &model.BlackListedToken{},
+		/// Master
+		&model.Role{},
+		&model.User{},
+		&model.Tenant{},
+		&model.UserTenantRole{},
+		&model.Student{},
+		&model.ParentStudent{},
+
+		/// Payment
+		&model.LedgerEntry{},
+		&model.PaymentAllocation{},
+		&model.PaymentOrder{},
+		&model.PaymentPolicy{},
+		&model.PaymentProduct{},
+		&model.StudentObligation{},
 	); err != nil {
 		panic("Auto Migrate Failed " + err.Error())
 	}
