@@ -1,6 +1,7 @@
 package app
 
 import (
+	"akadia/domain"
 	"log"
 	"os"
 	"strconv"
@@ -13,6 +14,29 @@ type AppConfig struct {
 	APP_ENV    string
 	DB_DSN     string
 	JWT_SECRET string
+}
+
+type AppConfigProviderImpl struct {
+	appConfig *AppConfig
+}
+
+func NewAppConfig(appConfig *AppConfig) domain.AppConfigProvider {
+	return &AppConfigProviderImpl{
+		appConfig: appConfig,
+	}
+}
+
+func (config *AppConfigProviderImpl) APP_PORT() int {
+	return config.appConfig.APP_PORT
+}
+func (config *AppConfigProviderImpl) APP_ENV() string {
+	return config.appConfig.APP_ENV
+}
+func (config *AppConfigProviderImpl) DB_DSN() string {
+	return config.appConfig.DB_DSN
+}
+func (config *AppConfigProviderImpl) JWT_SECRET() string {
+	return config.appConfig.JWT_SECRET
 }
 
 func LoadConfig() *AppConfig {

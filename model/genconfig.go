@@ -7,10 +7,6 @@ import (
 
 var _ = genconfig.Config{
 	FieldTypeMap: map[any]any{
-		// AttendanceStatus(""): field.String{},
-		// EmployeeStatus(""):   field.String{},
-		// LeaveStatus(""):      field.String{},
-		// UserRole(""):         field.String{},
 
 		ParentStudentRelationship(""): field.String{},
 		PaymentOrderStatus(""):        field.String{},

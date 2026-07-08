@@ -11,14 +11,14 @@ import (
 var User = struct {
 	Email           field.String
 	Password        field.String
-	FullName        field.String
+	DisplayName     field.String
 	Phone           field.String
 	Status          field.String
 	UserTenantRoles field.Slice[model.UserTenantRole]
 }{
 	Email:           field.String{}.WithColumn("email"),
 	Password:        field.String{}.WithColumn("password"),
-	FullName:        field.String{}.WithColumn("full_name"),
+	DisplayName:     field.String{}.WithColumn("display_name"),
 	Phone:           field.String{}.WithColumn("phone"),
 	Status:          field.String{}.WithColumn("status"),
 	UserTenantRoles: field.Slice[model.UserTenantRole]{}.WithName("UserTenantRoles"),

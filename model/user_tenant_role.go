@@ -22,9 +22,18 @@ func (UserTenantRole) TableName() string {
 	return SchemaMaster + ".user_tenant_roles"
 }
 
+type UserTenantRolePreload string
+
+const (
+	UserTenantRolePreloadUser   UserTenantRolePreload = "User"
+	UserTenantRolePreloadTenant UserTenantRolePreload = "Tenant"
+	UserTenantRolePreloadRole   UserTenantRolePreload = "Role"
+)
+
 /*
 Why IsDefault?
 
+Multi Tenant User
 Imagine this user.
 John
 ↓

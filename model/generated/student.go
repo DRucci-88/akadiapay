@@ -19,7 +19,6 @@ var Student = struct {
 	Gender         field.String
 	BirthPlace     field.String
 	BirthDate      field.Time
-	Email          field.String
 	Phone          field.String
 	Address        field.String
 	Status         field.String
@@ -34,7 +33,6 @@ var Student = struct {
 	Gender:         field.String{}.WithColumn("gender"),
 	BirthPlace:     field.String{}.WithColumn("birth_place"),
 	BirthDate:      field.Time{}.WithColumn("birth_date"),
-	Email:          field.String{}.WithColumn("email"),
 	Phone:          field.String{}.WithColumn("phone"),
 	Address:        field.String{}.WithColumn("address"),
 	Status:         field.String{}.WithColumn("status"),

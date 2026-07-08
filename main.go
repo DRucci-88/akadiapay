@@ -10,5 +10,5 @@ func main() {
 
 	config := application.Config
 
-	application.Server.Run(fmt.Sprintf(":%d", config.APP_PORT))
+	application.Server.Run(fmt.Sprintf(":%d", config.APP_PORT()))
 }

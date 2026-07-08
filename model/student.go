@@ -17,8 +17,7 @@ type Student struct {
 	FullName   string        `gorm:"type:varchar(150);not null"`
 	Gender     StudentGender `gorm:"type:varchar(20)"`
 	BirthPlace string        `gorm:"type:varchar(100)"`
-	BirthDate  *time.Time
-	Email      string        `gorm:"type:varchar(150)"`
+	BirthDate  time.Time
 	Phone      string        `gorm:"type:varchar(30)"`
 	Address    string        `gorm:"type:text"`
 	Status     StudentStatus `gorm:"type:varchar(20);not null"`
@@ -46,6 +45,13 @@ const (
 	StudentStatusGraduated  StudentStatus = "GRADUATED"
 	StudentStatusDroppedOut StudentStatus = "DROPPED_OUT"
 	StudentStatusSuspended  StudentStatus = "SUSPENDED"
+)
+
+type StudentPreload string
+
+const (
+	StudentPreloadTenant StudentPreload = "Tenant"
+	StudentPreloadUser   StudentPreload = "User"
 )
 
 /*

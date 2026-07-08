@@ -1,16 +1,20 @@
 package app
 
-import "github.com/gin-gonic/gin"
+import (
+	"akadia/domain"
+
+	"github.com/gin-gonic/gin"
+)
 
 type Application struct {
 	Server *gin.Engine
-	Config *AppConfig
+	Config domain.AppConfigProvider
 	// CleanUp *worker.TokenCleanupWorker
 }
 
 func NewApplication(
 	server *gin.Engine,
-	config *AppConfig,
+	config domain.AppConfigProvider,
 	// cleanup *worker.TokenCleanupWorker,
 ) *Application {
 	return &Application{
