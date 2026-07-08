@@ -14,7 +14,7 @@ func SeedStudents(db *gorm.DB) error {
 	students := []model.Student{
 		{
 			TenantID: seed.MustTenantByCode("SMAN1").ID,
-			UserID:   ptr(seed.MustUserByEmail("kevin@student.sch.id").ID),
+			UserID:   ptr(seed.MustUserByEmail("kevin@student.id").ID),
 
 			NISN:      "1000000001",
 			FullName:  "Kevin Wijaya",
@@ -26,7 +26,7 @@ func SeedStudents(db *gorm.DB) error {
 		},
 		{
 			TenantID: seed.MustTenantByCode("SMAN1").ID,
-			UserID:   ptr(seed.MustUserByEmail("rucco@student.sch.id").ID),
+			UserID:   ptr(seed.MustUserByEmail("rucco@student.id").ID),
 
 			NISN:      "1000000002",
 			FullName:  "Rucco Le Amor",
@@ -38,7 +38,7 @@ func SeedStudents(db *gorm.DB) error {
 		},
 		{
 			TenantID: seed.MustTenantByCode("SMAHB").ID,
-			UserID:   ptr(seed.MustUserByEmail("gilis@student.sch.id").ID),
+			UserID:   ptr(seed.MustUserByEmail("gilis@student.id").ID),
 
 			NISN:      "1000000003",
 			FullName:  "Gilis Kilis",

@@ -21,7 +21,7 @@ func SeedTenants(db *gorm.DB) error {
 		{
 			Code:    "SMAN1",
 			Name:    "SMAN 1 Jakarta",
-			Email:   ptr("admin@sman1.sch.id"),
+			Email:   ptr("admin@sman1.id"),
 			Phone:   "0211111111",
 			Address: "Jakarta",
 			Status:  model.TenantStatusActive,
@@ -29,7 +29,7 @@ func SeedTenants(db *gorm.DB) error {
 		{
 			Code:    "SMAHB",
 			Name:    "SMA Harapan Bangsa",
-			Email:   ptr("admin@harapan.sch.id"),
+			Email:   ptr("admin@harapan.id"),
 			Phone:   "0222222222",
 			Address: "Bandung",
 			Status:  model.TenantStatusTrial,

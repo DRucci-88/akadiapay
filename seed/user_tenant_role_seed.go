@@ -26,7 +26,7 @@ func SeedUserTenantRoles(db *gorm.DB) error {
 		// SMAN 1
 		// ============================
 		{
-			UserID:    seed.MustUserByEmail("admin@sman1.sch.id").ID,
+			UserID:    seed.MustUserByEmail("admin@sman1.id").ID,
 			TenantID:  seed.MustTenantByCode("SMAN1").ID,
 			RoleID:    seed.MustRoleByCode(model.RoleCodeSchoolAdmin).ID,
 			IsDefault: true,
@@ -38,13 +38,13 @@ func SeedUserTenantRoles(db *gorm.DB) error {
 			IsDefault: true,
 		},
 		{
-			UserID:    seed.MustUserByEmail("kevin@student.sch.id").ID,
+			UserID:    seed.MustUserByEmail("kevin@student.id").ID,
 			TenantID:  seed.MustTenantByCode("SMAN1").ID,
 			RoleID:    seed.MustRoleByCode(model.RoleCodeStudent).ID,
 			IsDefault: true,
 		},
 		{
-			UserID:    seed.MustUserByEmail("rucco@student.sch.id").ID,
+			UserID:    seed.MustUserByEmail("rucco@student.id").ID,
 			TenantID:  seed.MustTenantByCode("SMAN1").ID,
 			RoleID:    seed.MustRoleByCode(model.RoleCodeStudent).ID,
 			IsDefault: true,
@@ -54,7 +54,7 @@ func SeedUserTenantRoles(db *gorm.DB) error {
 		// SMA Harapan Bangsa
 		// ============================
 		{
-			UserID:    seed.MustUserByEmail("admin@harapan.sch.id").ID,
+			UserID:    seed.MustUserByEmail("admin@harapan.id").ID,
 			TenantID:  seed.MustTenantByCode("SMAHB").ID,
 			RoleID:    seed.MustRoleByCode(model.RoleCodeSchoolAdmin).ID,
 			IsDefault: true,
@@ -66,7 +66,7 @@ func SeedUserTenantRoles(db *gorm.DB) error {
 			IsDefault: true,
 		},
 		{
-			UserID:    seed.MustUserByEmail("gilis@student.sch.id").ID,
+			UserID:    seed.MustUserByEmail("gilis@student.id").ID,
 			TenantID:  seed.MustTenantByCode("SMAHB").ID,
 			RoleID:    seed.MustRoleByCode(model.RoleCodeStudent).ID,
 			IsDefault: true,
@@ -76,7 +76,7 @@ func SeedUserTenantRoles(db *gorm.DB) error {
 		// Multi Role Demo
 		// ============================
 		{
-			UserID:    seed.MustUserByEmail("admin@sman1.sch.id").ID,
+			UserID:    seed.MustUserByEmail("admin@sman1.id").ID,
 			TenantID:  seed.MustTenantByCode("AKADIA").ID,
 			RoleID:    seed.MustRoleByCode(model.RoleCodeSuperAdmin).ID,
 			IsDefault: false,

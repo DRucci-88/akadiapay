@@ -23,13 +23,13 @@ func SeedUsers(db *gorm.DB) error {
 			Status:      model.UserStatusActive,
 		},
 		{
-			Email:       "admin@sman1.sch.id",
+			Email:       "admin@sman1.id",
 			Password:    password,
 			DisplayName: "SMAN 1 Administrator",
 			Status:      model.UserStatusActive,
 		},
 		{
-			Email:       "admin@harapan.sch.id",
+			Email:       "admin@harapan.id",
 			Password:    password,
 			DisplayName: "Harapan Bangsa Administrator",
 			Status:      model.UserStatusActive,
@@ -40,26 +40,26 @@ func SeedUsers(db *gorm.DB) error {
 			DisplayName: "Budi Santoso",
 			Status:      model.UserStatusActive,
 		},
-				{
+		{
 			Email:       "asep.parent@gmail.com",
 			Password:    password,
 			DisplayName: "Asep Budiman",
 			Status:      model.UserStatusActive,
 		},
 		{
-			Email:       "kevin@student.sch.id",
+			Email:       "kevin@student.id",
 			Password:    password,
 			DisplayName: "Kevin Wijaya",
 			Status:      model.UserStatusActive,
 		},
-				{
-			Email:       "rucco@student.sch.id",
+		{
+			Email:       "rucco@student.id",
 			Password:    password,
 			DisplayName: "Rucco Le Amor",
 			Status:      model.UserStatusActive,
 		},
-				{
-			Email:       "gilis@student.sch.id",
+		{
+			Email:       "gilis@student.id",
 			Password:    password,
 			DisplayName: "Gilis Kilis",
 			Status:      model.UserStatusActive,

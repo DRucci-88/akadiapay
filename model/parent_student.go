@@ -6,7 +6,7 @@ type ParentStudent struct {
 	BaseModel
 
 	ParentUserID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex:uk_parent_student"`
-	ParentUser   *User     `gorm:"foreignKey:ParentID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ParentUser   *User     `gorm:"foreignKey:ParentUserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 
 	StudentID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex:uk_parent_student"`
 	Student   *Student  `gorm:"foreignKey:StudentID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
