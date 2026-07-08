@@ -3,7 +3,7 @@ package model
 type Role struct {
 	Code        RoleCode `gorm:"type:varchar(50);not null;uniqueIndex:uk_role_code"`
 	Name        string   `gorm:"type:varchar(100);not null"`
-	Description string   `gorm:"type:text"`
+	Description *string  `gorm:"type:text"`
 	IsSystem    bool     `gorm:"default:true;not null"`
 
 	BaseModel

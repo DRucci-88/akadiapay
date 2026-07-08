@@ -5,8 +5,8 @@ import "github.com/google/uuid"
 type ParentStudent struct {
 	BaseModel
 
-	ParentID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex:uk_parent_student"`
-	Parent   *User     `gorm:"foreignKey:ParentID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ParentUserID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex:uk_parent_student"`
+	ParentUser   *User     `gorm:"foreignKey:ParentID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 
 	StudentID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex:uk_parent_student"`
 	Student   *Student  `gorm:"foreignKey:StudentID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`

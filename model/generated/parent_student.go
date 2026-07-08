@@ -10,15 +10,15 @@ import (
 )
 
 var ParentStudent = struct {
-	ParentID     field.Field[uuid.UUID]
-	Parent       field.Struct[model.User]
+	ParentUserID field.Field[uuid.UUID]
+	ParentUser   field.Struct[model.User]
 	StudentID    field.Field[uuid.UUID]
 	Student      field.Struct[model.Student]
 	Relationship field.String
 	IsPrimary    field.Bool
 }{
-	ParentID:     field.Field[uuid.UUID]{}.WithColumn("parent_id"),
-	Parent:       field.Struct[model.User]{}.WithName("Parent"),
+	ParentUserID: field.Field[uuid.UUID]{}.WithColumn("parent_user_id"),
+	ParentUser:   field.Struct[model.User]{}.WithName("ParentUser"),
 	StudentID:    field.Field[uuid.UUID]{}.WithColumn("student_id"),
 	Student:      field.Struct[model.Student]{}.WithName("Student"),
 	Relationship: field.String{}.WithColumn("relationship"),

@@ -3,7 +3,7 @@ package app
 import (
 	"akadia/domain"
 	"akadia/model"
-	"akadia/seeder"
+	"akadia/seed"
 	"fmt"
 
 	"gorm.io/driver/postgres"
@@ -50,7 +50,7 @@ func NewDatabase(
 		panic("Auto Migrate Failed " + err.Error())
 	}
 
-	if err := seeder.Run(db); err != nil {
+	if err := seed.Run(db); err != nil {
 		panic("Seeder FAILED" + err.Error())
 	}
 
