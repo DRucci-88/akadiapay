@@ -1,0 +1,17 @@
+info:
+  name: Profile Parent
+  type: http
+  seq: 3
+
+http:
+  method: get
+  url: "{{base_url}}/auth/profile"
+  auth:
+    type: bearer
+    token: "{{token_parent}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

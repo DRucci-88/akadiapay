@@ -1,0 +1,10 @@
+name: dev_akadia
+variables:
+  - name: base_url
+    value: http://localhost:8080
+  - secret: true
+    name: token_student
+  - secret: true
+    name: token_parent
+  - secret: true
+    name: token_school
