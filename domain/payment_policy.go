@@ -28,7 +28,7 @@ type PaymentPolicyService interface {
 		pageable *shared.Pageable,
 		filter *PaymentPolicyFilter,
 		authContext *security.AuthContext,
-	) (*shared.Page[model.PaymentPolicy], error)
+	) (*shared.Page[PaymentPolicyResponse], error)
 	Create(
 		ctx context.Context,
 		authContext *security.AuthContext,
@@ -95,8 +95,8 @@ type PaymentPolicyCreate struct {
 }
 
 type PaymentPolicyUpdate struct {
-	Code        *string `json:"code" binding:"required,max=50"`
-	Name        *string `json:"name" binding:"required,max=100"`
+	Code        *string `json:"code" binding:"max=50"`
+	Name        *string `json:"name" binding:"max=100"`
 	Description *string `json:"description"`
 
 	AllowPartial      *bool    `json:"allow_partial"`
@@ -137,4 +137,12 @@ func NewPaymentPolicyResponse(model *model.PaymentPolicy) *PaymentPolicyResponse
 		AllowOverPayment:    model.AllowOverPayment,
 		AutoCloseObligation: model.AutoCloseObligation,
 	}
+}
+
+func NewPaymentPolicyResponses(models []model.PaymentPolicy) []PaymentPolicyResponse {
+	resList := make([]PaymentPolicyResponse, 0, len(models))
+	for i := range models {
+		resList = append(resList, *NewPaymentPolicyResponse(&models[i]))
+	}
+	return resList
 }

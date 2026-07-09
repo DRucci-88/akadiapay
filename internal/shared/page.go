@@ -10,7 +10,6 @@ type Page[T any] struct {
 func NewPageEmpty[T any](
 	pageable *Pageable,
 ) *Page[T] {
-	pageable.Normalize()
 	return &Page[T]{
 		Data: make([]T, 0),
 		Pagination: Pagination{
@@ -29,8 +28,6 @@ func NewPage[T any](
 	totalCount int64,
 	data []T,
 ) *Page[T] {
-
-	pageable.Normalize()
 
 	totalPage := int(math.Ceil(float64(totalCount) / float64(pageable.Size)))
 

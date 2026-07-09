@@ -1,14 +1,12 @@
 package shared
 
 import (
-	"strconv"
-
 	"github.com/gin-gonic/gin"
 )
 
 type Pageable struct {
-	Page int `form:"page"`
-	Size int `form:"size"`
+	Page int `form:"page,default=1"`
+	Size int `form:"size,default=15"`
 }
 
 func (p *Pageable) Normalize() {
@@ -35,16 +33,12 @@ func (p *Pageable) Offset() int {
 
 func GetPageable(c *gin.Context) (*Pageable, error) {
 
-	page, err := strconv.Atoi(c.Query("page"))
-	if err != nil {
-		return nil, ErrInvalidPaginationParam
-	}
-	size, err := strconv.Atoi(c.Query("size"))
-	if err != nil {
+	var req Pageable
+	if err := c.ShouldBindQuery(&req); err != nil {
 		return nil, ErrInvalidPaginationParam
 	}
 
-	pageable := Pageable{Page: page, Size: size}
+	pageable := Pageable{Page: req.Page, Size: req.Size}
 	pageable.Normalize()
 	// log.Printf("%+v\n", pageable)
 	return &pageable, nil

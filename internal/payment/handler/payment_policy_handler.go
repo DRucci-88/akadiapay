@@ -88,7 +88,7 @@ func (h *paymentPolicyHandler) Create(c *gin.Context) {
 
 	// Filter
 	var req domain.PaymentPolicyCreate
-	if err := c.ShouldBindQuery(&req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 		return
 	}
@@ -120,7 +120,7 @@ func (h *paymentPolicyHandler) Update(c *gin.Context) {
 
 	// Filter
 	var req domain.PaymentPolicyUpdate
-	if err := c.ShouldBindQuery(&req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 		return
 	}

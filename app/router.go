@@ -27,6 +27,7 @@ func NewRouter(
 	paymentPolicyApi.GET("/:id", paymentPolicy.FindByID)
 	paymentPolicyApi.GET("", paymentPolicy.FindAll)
 	paymentPolicyApi.PUT("/:id", paymentPolicy.Update)
+	paymentPolicyApi.POST("", paymentPolicy.Create)
 
 	return r
 }

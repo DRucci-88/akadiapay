@@ -34,8 +34,16 @@ func (s *paymentPolicyServiceImpl) FindPaginate(
 	pageable *shared.Pageable,
 	filter *domain.PaymentPolicyFilter,
 	authContext *security.AuthContext,
-) (*shared.Page[model.PaymentPolicy], error) {
-	return s.paymentPolicyRepo.FindPaginate(ctx, pageable, filter, authContext)
+) (*shared.Page[domain.PaymentPolicyResponse], error) {
+	page, err := s.paymentPolicyRepo.FindPaginate(ctx, pageable, filter, authContext)
+	if err != nil {
+		return shared.NewPageEmpty[domain.PaymentPolicyResponse](pageable), err
+	}
+
+	return &shared.Page[domain.PaymentPolicyResponse]{
+		Data:       domain.NewPaymentPolicyResponses(page.Data),
+		Pagination: page.Pagination,
+	}, nil
 }
 
 func (s *paymentPolicyServiceImpl) Create(
@@ -69,7 +77,7 @@ func (s *paymentPolicyServiceImpl) Create(
 		Description:         req.Description,
 		AllowPartial:        req.AllowPartial,
 		MinimumAmount:       req.MinimumAmount,
-		MinimumPercentage:   req.MinimumAmount,
+		MinimumPercentage:   req.MinimumPercentage,
 		AllowOverPayment:    req.AllowOverPayment,
 		AutoCloseObligation: req.AutoCloseObligation,
 	}
