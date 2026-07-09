@@ -22,7 +22,7 @@ func CheckPasswordHash(password string, hash string) bool {
 }
 
 func GenerateJWT(
-	jwtSecretKey string,
+	jwtSecretKeyByte []byte,
 	email string,
 	userID uuid.UUID,
 	tenantID uuid.UUID,
@@ -32,15 +32,17 @@ func GenerateJWT(
 
 	claims := JWTClaims{
 		UserID:    userID,
+		Email:     email,
 		TenantID:  tenantID,
 		StudentID: studentID,
 		RoleCode:  roleCode,
 		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   userID.String(),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecretKey)
+	return token.SignedString([]byte(jwtSecretKeyByte))
 }

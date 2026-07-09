@@ -37,5 +37,11 @@ func (s *UserTenantRoleServiceImpl) FindByUserID(
 	ctx context.Context,
 	userID uuid.UUID,
 ) ([]model.UserTenantRole, error) {
-	return s.userTenantRoleRepo.FindByUserID(ctx, userID, model.UserTenantRolePreloadRole, model.UserTenantRolePreloadTenant)
+	return s.userTenantRoleRepo.FindByUserID(
+		ctx,
+		userID,
+		model.UserTenantRolePreloadUser,
+		model.UserTenantRolePreloadRole,
+		model.UserTenantRolePreloadTenant,
+	)
 }

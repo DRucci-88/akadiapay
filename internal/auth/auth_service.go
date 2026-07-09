@@ -52,7 +52,7 @@ func (s *authServiceImpl) Login(
 
 	userTenantRoleList, err := s.userTenantRoleService.FindByUserID(ctx, user.ID)
 
-	jwtSecretKey := s.appConfig.JWT_SECRET()
+	jwtSecretKeyByte := s.appConfig.JWT_SECRET_BYTE()
 	resList := make([]domain.AuthLoginResponse, 0, len(userTenantRoleList))
 	for i := range userTenantRoleList {
 
@@ -67,7 +67,13 @@ func (s *authServiceImpl) Login(
 			studentID = &student.ID
 		}
 
-		token, err := security.GenerateJWT(jwtSecretKey, temp.User.Email, temp.UserID, temp.TenantID, studentID, temp.Role.Code)
+		log.Println(string(jwtSecretKeyByte))
+		log.Println(temp.User.Email)
+		log.Println(temp.UserID)
+		log.Println(temp.TenantID)
+		log.Println(studentID)
+		log.Println(temp.Role.Code)
+		token, err := security.GenerateJWT(jwtSecretKeyByte, temp.User.Email, temp.UserID, temp.TenantID, studentID, temp.Role.Code)
 
 		if err != nil {
 			return make([]domain.AuthLoginResponse, 0), err

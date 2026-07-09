@@ -38,6 +38,9 @@ func (config *AppConfigProviderImpl) DB_DSN() string {
 func (config *AppConfigProviderImpl) JWT_SECRET() string {
 	return config.appConfig.JWT_SECRET
 }
+func (config *AppConfigProviderImpl) JWT_SECRET_BYTE() []byte {
+	return []byte(config.appConfig.JWT_SECRET)
+}
 
 func LoadConfig() *AppConfig {
 	env := os.Getenv("APP_ENV")

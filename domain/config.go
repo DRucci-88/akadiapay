@@ -5,4 +5,5 @@ type AppConfigProvider interface {
 	APP_ENV() string
 	DB_DSN() string
 	JWT_SECRET() string
+	JWT_SECRET_BYTE() []byte
 }

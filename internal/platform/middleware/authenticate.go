@@ -24,7 +24,7 @@ func NewJWTMiddleware(
 		}
 
 		tokenParts := strings.Split(authHeader, " ")
-		log.Println(tokenParts)
+		// log.Println(tokenParts)
 		if len(tokenParts) != 2 || tokenParts[0] != "Bearer" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": shared.ErrAuthUnauthorized.Error()})
 			return
@@ -44,8 +44,10 @@ func NewJWTMiddleware(
 
 		claims := &security.JWTClaims{}
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (any, error) {
-			return appConfig.JWT_SECRET(), nil
+			return appConfig.JWT_SECRET_BYTE(), nil
 		})
+		log.Println(err)
+		log.Println(token.Valid)
 
 		if err != nil || !token.Valid {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": shared.ErrAuthTokenExpired.Error()})
