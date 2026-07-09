@@ -10,6 +10,8 @@ import (
 func NewRouter(
 	m *middleware.MiddlewareManager,
 	auth domain.AuthHandler,
+	paymentProduct domain.PaymentProductHandler,
+	paymentPolicy domain.PaymentPolicyHandler,
 ) *gin.Engine {
 	r := gin.Default()
 
@@ -20,6 +22,11 @@ func NewRouter(
 	authApi := r.Group("/auth")
 	authApi.POST("/login", auth.Login)
 	authApi.GET("/profile", m.JWT, auth.Profile)
+
+	paymentPolicyApi := r.Group("/payment-policy", m.JWT)
+	paymentPolicyApi.GET("/:id", paymentPolicy.FindByID)
+	paymentPolicyApi.GET("", paymentPolicy.FindAll)
+	paymentPolicyApi.PUT("/:id", paymentPolicy.Update)
 
 	return r
 }

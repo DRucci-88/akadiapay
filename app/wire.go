@@ -5,8 +5,11 @@ package app
 
 import (
 	"akadia/internal/auth"
-	"akadia/internal/master/repository"
-	"akadia/internal/master/service"
+	repoMaster "akadia/internal/master/repository"
+	serviceMaster "akadia/internal/master/service"
+	handlerPayment "akadia/internal/payment/handler"
+	repoPayment "akadia/internal/payment/repository"
+	servicePayment "akadia/internal/payment/service"
 	"akadia/internal/platform/middleware"
 
 	"github.com/google/wire"
@@ -31,13 +34,24 @@ func IntializedApplication() *Application {
 		// auth.NewAuthRepositoryManagerAuth,
 
 		/* MASTER */
-		repository.NewAuthRepositoryManagerMaster,
+		repoMaster.NewAuthRepositoryManagerMaster,
 
 		// Service
-		service.NewStudentService,
-		service.NewTenantService,
-		service.NewUserService,
-		service.NewUserTenantRoleService,
+		serviceMaster.NewStudentService,
+		serviceMaster.NewTenantService,
+		serviceMaster.NewUserService,
+		serviceMaster.NewUserTenantRoleService,
+
+		/* PAYMENT */
+		repoPayment.NewAuthRepositoryManagerPayment,
+
+		// Handler
+		handlerPayment.NewPaymentProductHandler,
+		handlerPayment.NewPaymentPolicyHandler,
+
+		// Service
+		servicePayment.NewPaymentPolicyService,
+		servicePayment.NewPaymentProductService,
 	)
 	return nil
 }

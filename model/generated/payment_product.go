@@ -11,7 +11,6 @@ import (
 
 var PaymentProduct = struct {
 	TenantID        field.Field[uuid.UUID]
-	Tenant          field.Struct[model.Tenant]
 	PaymentPolicyID field.Field[uuid.UUID]
 	PaymentPolicy   field.Struct[model.PaymentPolicy]
 	Code            field.String
@@ -21,7 +20,6 @@ var PaymentProduct = struct {
 	Status          field.String
 }{
 	TenantID:        field.Field[uuid.UUID]{}.WithColumn("tenant_id"),
-	Tenant:          field.Struct[model.Tenant]{}.WithName("Tenant"),
 	PaymentPolicyID: field.Field[uuid.UUID]{}.WithColumn("payment_policy_id"),
 	PaymentPolicy:   field.Struct[model.PaymentPolicy]{}.WithName("PaymentPolicy"),
 	Code:            field.String{}.WithColumn("code"),

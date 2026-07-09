@@ -11,7 +11,6 @@ type RepositoryManagerMasterImpl struct {
 	db *gorm.DB
 }
 
-// Constructor (Google Wire)
 func NewAuthRepositoryManagerMaster(db *gorm.DB) domain.RepositoryManagerMaster {
 	return &RepositoryManagerMasterImpl{
 		db: db,

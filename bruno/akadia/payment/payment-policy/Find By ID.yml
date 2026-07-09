@@ -1,0 +1,19 @@
+info:
+  name: Find By ID
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{base_url}}/payment-policy/:id"
+  params:
+    - name: id
+      value: "1"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -67,12 +67,12 @@ func (s *authServiceImpl) Login(
 			studentID = &student.ID
 		}
 
-		log.Println(string(jwtSecretKeyByte))
-		log.Println(temp.User.Email)
-		log.Println(temp.UserID)
-		log.Println(temp.TenantID)
-		log.Println(studentID)
-		log.Println(temp.Role.Code)
+		// log.Println(string(jwtSecretKeyByte))
+		// log.Println(temp.User.Email)
+		// log.Println(temp.UserID)
+		// log.Println(temp.TenantID)
+		// log.Println(studentID)
+		// log.Println(temp.Role.Code)
 		token, err := security.GenerateJWT(jwtSecretKeyByte, temp.User.Email, temp.UserID, temp.TenantID, studentID, temp.Role.Code)
 
 		if err != nil {

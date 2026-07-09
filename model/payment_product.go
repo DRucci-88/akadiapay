@@ -6,7 +6,7 @@ import (
 
 type PaymentProduct struct {
 	TenantID uuid.UUID `gorm:"type:uuid;not null;index:idx_payment_product_tenant;uniqueIndex:uk_payment_product"`
-	Tenant   *Tenant   `gorm:"foreignKey:TenantID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	// Tenant   *Tenant   `gorm:"foreignKey:TenantID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
 
 	PaymentPolicyID uuid.UUID      `gorm:"type:uuid;not null;index:idx_payment_product_policy"`
 	PaymentPolicy   *PaymentPolicy `gorm:"foreignKey:PaymentPolicyID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
@@ -30,4 +30,10 @@ type PaymentProductStatus string
 const (
 	PaymentProductStatusActive   PaymentProductStatus = "ACTIVE"
 	PaymentProductStatusInactive PaymentProductStatus = "INACTIVE"
+)
+
+type PaymentProductPreload string
+
+const (
+	PaymentProductPreloadPaymentPolicy PaymentProductPreload = "PaymentPolicy"
 )

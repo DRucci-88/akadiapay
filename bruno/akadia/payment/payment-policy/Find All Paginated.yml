@@ -1,0 +1,22 @@
+info:
+  name: Find All Paginated
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{base_url}}/payment-policy?page=1&size=10"
+  params:
+    - name: page
+      value: "1"
+      type: query
+    - name: size
+      value: "10"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

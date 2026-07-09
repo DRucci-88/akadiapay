@@ -1,0 +1,19 @@
+info:
+  name: Update By ID
+  type: http
+  seq: 1
+
+http:
+  method: PUT
+  url: "{{base_url}}/payment-policy/:id"
+  params:
+    - name: id
+      value: ""
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

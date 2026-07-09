@@ -10,6 +10,9 @@ import (
 	"akadia/internal/auth"
 	"akadia/internal/master/repository"
 	"akadia/internal/master/service"
+	"akadia/internal/payment/handler"
+	repository2 "akadia/internal/payment/repository"
+	service2 "akadia/internal/payment/service"
 	"akadia/internal/platform/middleware"
 )
 
@@ -27,7 +30,12 @@ func IntializedApplication() *Application {
 	tenantService := service.NewTenantService(repositoryManagerMaster)
 	authService := auth.NewAuthService(appConfigProvider, userService, userTenantRoleService, studentService, tenantService)
 	authHandler := auth.NewAuthHandler(authService)
-	engine := NewRouter(middlewareManager, authHandler)
+	repositoryManagerPayment := repository2.NewAuthRepositoryManagerPayment(db)
+	paymentProductService := service2.NewPaymentProductService(repositoryManagerPayment)
+	paymentProductHandler := handler.NewPaymentProductHandler(paymentProductService)
+	paymentPolicyService := service2.NewPaymentPolicyService(repositoryManagerPayment)
+	paymentPolicyHandler := handler.NewPaymentPolicyHandler(paymentPolicyService)
+	engine := NewRouter(middlewareManager, authHandler, paymentProductHandler, paymentPolicyHandler)
 	application := NewApplication(engine, appConfigProvider)
 	return application
 }

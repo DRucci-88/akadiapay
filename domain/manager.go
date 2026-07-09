@@ -17,3 +17,13 @@ type RepositoryManagerMaster interface {
 	User() UserRepository
 	UserTenantRole() UserTenantRoleRepository
 }
+
+type RepositoryManagerPayment interface {
+	WithDB(db *gorm.DB) RepositoryManagerPayment
+	Transaction(
+		ctx context.Context,
+		fn func(repo RepositoryManagerPayment) error,
+	) error
+	PaymentPolicy() PaymentPolicyRepository
+	PaymentProduct() PaymentProductRepository
+}

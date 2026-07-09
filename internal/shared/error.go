@@ -3,11 +3,16 @@ package shared
 import "errors"
 
 var (
-	/// Auth
+	/* GENERAL */
+	ErrInvalidIDParam         = errors.New("Invalid ID param")
+	ErrInvalidPaginationParam = errors.New("Invalid Pagination Param")
+
+	/* Auth */
 	ErrInvalidCredential = errors.New("Email or Password is wrong")
 	ErrAuthUnauthorized  = errors.New("Unauthorized")
 	ErrAuthTokenExpired  = errors.New("Token is Expired")
 
+	/* MASTER */
 	/// User
 	ErrUserNotFound = errors.New("User not found")
 
@@ -19,4 +24,14 @@ var (
 
 	/// Tenant
 	ErrTenantNotFound = errors.New("Tenant Not Found")
+
+	/* PAYMENT */
+	// PaymentPolicy
+	ErrPaymentPolicyNotFound                 = errors.New("Payment Policy not found")
+	ErrPaymentPolicyMinimumAmountInvalid     = errors.New("Minimum Amount Invalid")
+	ErrPaymentPolicyMinimumPercentageInvalid = errors.New("Minimum Percentage Invalid")
+	ErrPaymentPolicyMinimumPaymentRequired   = errors.New("Minimum Payment Required")
+
+	// Payment Product
+	ErrPaymentProductNotFound = errors.New("Payment Product not found")
 )

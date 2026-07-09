@@ -8,7 +8,7 @@ import (
 type PaymentPolicy struct {
 	TenantID uuid.UUID `gorm:"type:uuid;not null;index:idx_payment_policy_tenant;uniqueIndex:uk_payment_policy"`
 
-	Code        string `gorm:"type:varchar(50);not null;uniqueIndex:uk_payment_policy_code;uniqueIndex:uk_payment_policy"`
+	Code        string `gorm:"type:varchar(50);not null;uniqueIndex:uk_payment_policy"`
 	Name        string `gorm:"type:varchar(100);not null"`
 	Description string `gorm:"type:text"`
 

@@ -1,0 +1,26 @@
+info:
+  name: Create
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{base_url}}/payment-policy/"
+  body:
+    type: json
+    data: |-
+      {
+        "code": "FULL_PAYMENT",
+        "name": "Full Payment",
+        "description": "Must be paid in full",
+        "allow_partial": false,
+        "allow_over_payment": false,
+        "auto_close_obligation": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

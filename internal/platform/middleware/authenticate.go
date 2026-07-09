@@ -17,7 +17,7 @@ func NewJWTMiddleware(
 ) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
-		log.Println("authHeader" + authHeader)
+		// log.Println("authHeader" + authHeader)
 		if authHeader == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": shared.ErrAuthUnauthorized.Error()})
 			return
@@ -46,8 +46,8 @@ func NewJWTMiddleware(
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (any, error) {
 			return appConfig.JWT_SECRET_BYTE(), nil
 		})
-		log.Println(err)
-		log.Println(token.Valid)
+		// log.Println(err)
+		// log.Println(token.Valid)
 
 		if err != nil || !token.Valid {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": shared.ErrAuthTokenExpired.Error()})
@@ -63,7 +63,7 @@ func NewJWTMiddleware(
 			Token:          tokenString,
 			TokenExpiredAt: claims.ExpiresAt.Time,
 		}
-		log.Println(authContext)
+		log.Printf("Auth Context %+v", authContext)
 
 		c.Set(domain.ContextKeyAuth, authContext)
 		c.Next()
