@@ -1,115 +1,39 @@
-# AkadiaPay MVP - Phase 1 (Updated)
+# AkadiaPay MVP - Phase 1 (Master Payment Data)
 
 ## Goal
 
-Build the payment configuration layer before any billing can occur.
+Configure how and what a school bills before generating student
+obligations.
 
 ## Business Flow
 
 School Admin ↓ Create Payment Policies (Billing Strategies) ↓ Create
-Payment Products ↓ Assign Products to Students
+Payment Products ↓ Ready for Student Obligations
 
-------------------------------------------------------------------------
+## Payment Policy (How to Bill)
 
-## 1. Payment Policy (Billing Strategy)
+-   Full Payment
+-   Partial Payment
+-   Installment
+-   Allow Partial
+-   Minimum Amount
+-   Minimum Percentage
+-   Allow Over Payment
+-   Auto Close Obligation
 
-Payment Policy defines **how a payment product can be paid**.
+One Payment Policy can be reused by many Payment Products.
 
-Examples: - Full Payment - Partial Payment - Installment
+## Payment Product (What to Bill)
 
-### CRUD
-
--   Create
--   Update
--   Delete
--   Detail
--   List
-
-### Required Fields
-
--   TenantID
--   Code
--   Name
--   Description
--   AllowPartial
--   MinimumAmount
--   MinimumPercentage
--   AllowOverPayment
--   AutoCloseObligation
-
-### Validation
-
--   Code unique per tenant
--   Name required
--   MinimumAmount / MinimumPercentage only used when partial payment is
-    enabled
-
-### Seeder
-
--   FULL_PAYMENT
--   PARTIAL_PAYMENT
--   INSTALLMENT
-
-------------------------------------------------------------------------
-
-## 2. Payment Product
-
-Payment Product defines **what the school bills**.
-
-Examples: - SPP - Registration Fee - Building Fee - Uniform - Book
-Package
+-   SPP
+-   Registration Fee
+-   Building Fee
+-   Uniform
+-   Book Package
 
 Each Payment Product references one Payment Policy.
 
-### CRUD
-
--   Create
--   Update
--   Delete
--   Detail
--   List
-
-### Required Fields
-
--   TenantID
--   PaymentPolicyID
--   Code
--   Name
--   Description
--   Category
--   Amount
--   IsActive
-
-### Validation
-
--   Code unique per tenant
--   Amount \> 0
--   PaymentPolicy must exist
-
-### Seeder
-
--   SPP
--   Registration
--   Uniform
--   Building Fee
--   Book Package
-
-------------------------------------------------------------------------
-
 ## Deliverables
-
--   Repository
--   Service
--   Handler
--   REST Client
--   Seeder
--   Pagination
--   Filtering
--   Tenant Isolation
-
-------------------------------------------------------------------------
-
-## Done Criteria
 
 -   Payment Policy CRUD
 -   Payment Product CRUD
@@ -118,10 +42,6 @@ Each Payment Product references one Payment Policy.
 -   Tenant Isolation
 -   Seeder
 
-------------------------------------------------------------------------
-
 ## Next Phase
 
 Student Obligation
-
-Assign Payment Products to Students to generate bills.
