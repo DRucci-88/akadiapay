@@ -35,7 +35,9 @@ func IntializedApplication() *Application {
 	paymentProductHandler := handler.NewPaymentProductHandler(paymentProductService)
 	paymentPolicyService := service2.NewPaymentPolicyService(repositoryManagerPayment)
 	paymentPolicyHandler := handler.NewPaymentPolicyHandler(paymentPolicyService)
-	engine := NewRouter(middlewareManager, authHandler, paymentProductHandler, paymentPolicyHandler)
+	studentObligationService := service2.NewStudentObligationService(repositoryManagerPayment, studentService, paymentProductService)
+	studentObligationHandler := handler.NewStudentObligationHandler(studentObligationService)
+	engine := NewRouter(middlewareManager, authHandler, paymentProductHandler, paymentPolicyHandler, studentObligationHandler)
 	application := NewApplication(engine, appConfigProvider)
 	return application
 }

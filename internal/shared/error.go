@@ -36,4 +36,10 @@ var (
 	ErrPaymentProductNotFound      = errors.New("Payment Product not found")
 	ErrPaymentProductPriceInvalid  = errors.New("Payment Product price invalid")
 	ErrPaymentProductStatusInvalid = errors.New("Payment Product status invalid")
+
+	// Student Obligation
+	ErrStudentObligationNotFound        = errors.New("Student Obligation not found")
+	ErrStudentObligationAlreadyExists   = errors.New("Student Obligation already exists")
+	ErrStudentObligationAmountInvalid   = errors.New("Student Obligation amount invalid")
+	ErrStudentObligationDueDateRequired = errors.New("Student Obligation due date required")
 )

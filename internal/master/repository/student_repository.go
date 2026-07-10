@@ -34,6 +34,22 @@ func (r *StudentRepositoryImpl) QueryWithPreloads(
 	return chain
 }
 
+func (r *StudentRepositoryImpl) FirstByID(
+	ctx context.Context,
+	id uuid.UUID,
+	preloads ...model.StudentPreload,
+) (*model.Student, error) {
+	student, err := r.QueryWithPreloads(preloads...).
+		Where(generated.BaseModel.ID.Eq(id)).
+		Where(generated.Student.Status.Eq(string(model.StudentStatusActive))).
+		First(ctx)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, shared.ErrStudentNotFound
+	}
+	return &student, err
+}
+
 func (r *StudentRepositoryImpl) FindByUserID(
 	ctx context.Context,
 	userID uuid.UUID,

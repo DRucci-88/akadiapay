@@ -13,6 +13,7 @@ func NewRouter(
 	auth domain.AuthHandler,
 	paymentProduct domain.PaymentProductHandler,
 	paymentPolicy domain.PaymentPolicyHandler,
+	studentObligation domain.StudentObligationHandler,
 ) *gin.Engine {
 	r := gin.Default()
 
@@ -35,6 +36,10 @@ func NewRouter(
 	paymentProductApi.GET("", paymentProduct.FindAll)
 	paymentProductApi.PUT("/:id", paymentProduct.Update)
 	paymentProductApi.POST("", paymentProduct.Create)
+
+	studentObligationApi := r.Group("/student-obligations", m.JWT)
+	studentObligationApi.GET("", studentObligation.FindAll)
+	studentObligationApi.POST("", studentObligation.Create)
 
 	return r
 }

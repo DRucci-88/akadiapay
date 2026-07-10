@@ -48,10 +48,12 @@ func IntializedApplication() *Application {
 		// Handler
 		handlerPayment.NewPaymentProductHandler,
 		handlerPayment.NewPaymentPolicyHandler,
+		handlerPayment.NewStudentObligationHandler,
 
 		// Service
 		servicePayment.NewPaymentPolicyService,
 		servicePayment.NewPaymentProductService,
+		servicePayment.NewStudentObligationService,
 	)
 	return nil
 }

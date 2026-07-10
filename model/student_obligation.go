@@ -19,6 +19,7 @@ type StudentObligation struct {
 	DueDate           time.Time
 	IssuedAt          time.Time
 	Status            StudentObligationStatus `gorm:"type:varchar(20);default:PENDING;not null"`
+	Notes             string                  `gorm:"type:text"`
 
 	BaseModel
 

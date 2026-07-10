@@ -9,6 +9,10 @@ import (
 )
 
 type StudentService interface {
+	FirstByID(
+		ctx context.Context,
+		id uuid.UUID,
+	) (*model.Student, error)
 	FindByUserID(
 		ctx context.Context,
 		userID uuid.UUID,
@@ -19,6 +23,11 @@ type StudentRepository interface {
 	QueryWithPreloads(
 		preloads ...model.StudentPreload,
 	) gorm.ChainInterface[model.Student]
+	FirstByID(
+		ctx context.Context,
+		id uuid.UUID,
+		preloads ...model.StudentPreload,
+	) (*model.Student, error)
 	FindByUserID(
 		ctx context.Context,
 		userID uuid.UUID,

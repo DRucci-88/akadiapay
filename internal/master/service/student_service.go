@@ -20,6 +20,13 @@ func NewStudentService(repo domain.RepositoryManagerMaster) domain.StudentServic
 	}
 }
 
+func (s *StudentServiceImpl) FirstByID(
+	ctx context.Context,
+	id uuid.UUID,
+) (*model.Student, error) {
+	return s.studentRepo.FirstByID(ctx, id, model.StudentPreloadTenant)
+}
+
 func (s *StudentServiceImpl) FindByUserID(
 	ctx context.Context,
 	userID uuid.UUID,

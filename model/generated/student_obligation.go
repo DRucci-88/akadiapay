@@ -19,6 +19,7 @@ var StudentObligation = struct {
 	DueDate            field.Time
 	IssuedAt           field.Time
 	Status             field.String
+	Notes              field.String
 	PaymentAllocations field.Slice[model.PaymentAllocation]
 }{
 	StudentID:          field.Field[uuid.UUID]{}.WithColumn("student_id"),
@@ -30,5 +31,6 @@ var StudentObligation = struct {
 	DueDate:            field.Time{}.WithColumn("due_date"),
 	IssuedAt:           field.Time{}.WithColumn("issued_at"),
 	Status:             field.String{}.WithColumn("status"),
+	Notes:              field.String{}.WithColumn("notes"),
 	PaymentAllocations: field.Slice[model.PaymentAllocation]{}.WithName("PaymentAllocations"),
 }

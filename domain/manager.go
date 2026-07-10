@@ -26,4 +26,5 @@ type RepositoryManagerPayment interface {
 	) error
 	PaymentPolicy() PaymentPolicyRepository
 	PaymentProduct() PaymentProductRepository
+	StudentObligation() StudentObligationRepository
 }
