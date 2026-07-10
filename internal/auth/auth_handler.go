@@ -19,6 +19,18 @@ func NewAuthHandler(authService domain.AuthService) domain.AuthHandler {
 	}
 }
 
+// Login godoc
+// @Summary Login and get tenant access tokens
+// @Description Authenticates a user and returns JWT-based tenant and role access contexts for the workspaces available to that user.
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body domain.AuthLoginRequest true "Login request"
+// @Success 200 {object} domain.SwaggerAuthLoginResponse
+// @Failure 400 {object} domain.ErrorResponse
+// @Failure 422 {object} domain.ErrorResponse
+// @Failure 500 {object} domain.ErrorResponse
+// @Router /auth/login [post]
 func (h *authHandlerImpl) Login(c *gin.Context) {
 	var req domain.AuthLoginRequest
 
@@ -37,6 +49,17 @@ func (h *authHandlerImpl) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": res})
 }
 
+// Profile godoc
+// @Summary Get authenticated profile
+// @Description Returns the active JWT-derived user, role, tenant, and optional student context for the current access token.
+// @Tags Auth
+// @Produce json
+// @Success 200 {object} domain.SwaggerAuthProfileResponse
+// @Failure 400 {object} domain.ErrorResponse
+// @Failure 401 {object} domain.ErrorResponse
+// @Failure 500 {object} domain.ErrorResponse
+// @Security BearerAuth
+// @Router /auth/profile [get]
 func (h *authHandlerImpl) Profile(c *gin.Context) {
 	authContextValue, exist := c.Get(domain.ContextKeyAuth)
 

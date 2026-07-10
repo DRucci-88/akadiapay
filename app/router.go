@@ -1,12 +1,14 @@
 package app
 
 import (
+	_ "akadia/docs"
 	"akadia/domain"
 	"akadia/internal/platform/middleware"
 	"akadia/model"
-	"akadia/model/generated"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func NewRouter(
@@ -21,9 +23,8 @@ func NewRouter(
 ) *gin.Engine {
 	r := gin.Default()
 
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "Berjalan Perfecto", "aaa": generated.PaymentPolicy.Code.Column().Name})
-	})
+	r.GET("/health", health)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	financeAdminRoles := m.Roles(
 		model.RoleCodeSuperAdmin,

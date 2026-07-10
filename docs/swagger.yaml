@@ -1,0 +1,2395 @@
+basePath: /
+definitions:
+  domain.AuthLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  domain.AuthLoginResponse:
+    properties:
+      is_default:
+        type: boolean
+      role_code:
+        type: string
+      student_id:
+        type: string
+      tenant_code:
+        type: string
+      tenant_id:
+        type: string
+      tenant_name:
+        type: string
+      token:
+        type: string
+      user_id:
+        type: string
+    type: object
+  domain.AuthProfileResponse:
+    properties:
+      display_name:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      role_code:
+        $ref: '#/definitions/model.RoleCode'
+      tenant_code:
+        type: string
+      tenant_id:
+        type: string
+      tenant_name:
+        type: string
+      user_id:
+        type: string
+    type: object
+  domain.ErrorResponse:
+    properties:
+      error:
+        example: validation error message
+        type: string
+    type: object
+  domain.LedgerEntryResponse:
+    properties:
+      account_code:
+        type: string
+      account_name:
+        type: string
+      credit:
+        type: number
+      debit:
+        type: number
+      description:
+        type: string
+      entry_date:
+        type: string
+      id:
+        type: string
+      payment_order_id:
+        type: string
+    type: object
+  domain.PaymentAllocationAllocate:
+    properties:
+      allocations:
+        items:
+          $ref: '#/definitions/domain.PaymentAllocationCreate'
+        type: array
+    required:
+    - allocations
+    type: object
+  domain.PaymentAllocationCreate:
+    properties:
+      allocated_amount:
+        type: number
+      student_obligation_id:
+        type: string
+    required:
+    - student_obligation_id
+    type: object
+  domain.PaymentAllocationResponse:
+    properties:
+      allocated_amount:
+        type: number
+      id:
+        type: string
+      payment_order_id:
+        type: string
+      student_obligation_id:
+        type: string
+    type: object
+  domain.PaymentAllocationResult:
+    properties:
+      allocations:
+        items:
+          $ref: '#/definitions/domain.PaymentAllocationResponse'
+        type: array
+      order_status:
+        $ref: '#/definitions/model.PaymentOrderStatus'
+      payment_order_id:
+        type: string
+      remaining_amount:
+        type: number
+      total_allocated:
+        type: number
+    type: object
+  domain.PaymentOrderCreate:
+    properties:
+      amount:
+        type: number
+      notes:
+        type: string
+      payment_date:
+        type: string
+      payment_method:
+        $ref: '#/definitions/model.PaymentOrderPaymentMethod'
+      student_id:
+        type: string
+    required:
+    - payment_date
+    - payment_method
+    - student_id
+    type: object
+  domain.PaymentOrderResponse:
+    properties:
+      id:
+        type: string
+      ledger_posted_at:
+        type: string
+      notes:
+        type: string
+      order_date:
+        type: string
+      order_number:
+        type: string
+      paid_by_user_id:
+        type: string
+      payment_method:
+        $ref: '#/definitions/model.PaymentOrderPaymentMethod'
+      reference_number:
+        type: string
+      status:
+        $ref: '#/definitions/model.PaymentOrderStatus'
+      student_id:
+        type: string
+      tenant_id:
+        type: string
+      total_amount:
+        type: number
+    type: object
+  domain.PaymentPolicyCreate:
+    properties:
+      allow_over_payment:
+        type: boolean
+      allow_partial:
+        type: boolean
+      auto_close_obligation:
+        type: boolean
+      code:
+        maxLength: 50
+        type: string
+      description:
+        type: string
+      minimum_amount:
+        type: number
+      minimum_percentage:
+        type: number
+      name:
+        maxLength: 100
+        type: string
+    required:
+    - code
+    - name
+    type: object
+  domain.PaymentPolicyResponse:
+    properties:
+      allow_over_payment:
+        type: boolean
+      allow_partial:
+        type: boolean
+      auto_close_obligation:
+        type: boolean
+      code:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      minimum_amount:
+        type: number
+      minimum_percentage:
+        type: number
+      name:
+        type: string
+      tenant_id:
+        type: string
+    type: object
+  domain.PaymentPolicyUpdate:
+    properties:
+      allow_over_payment:
+        type: boolean
+      allow_partial:
+        type: boolean
+      auto_close_obligation:
+        type: boolean
+      code:
+        maxLength: 50
+        type: string
+      description:
+        type: string
+      minimum_amount:
+        type: number
+      minimum_percentage:
+        type: number
+      name:
+        maxLength: 100
+        type: string
+    type: object
+  domain.PaymentProductCreate:
+    properties:
+      code:
+        maxLength: 50
+        type: string
+      description:
+        type: string
+      name:
+        maxLength: 150
+        type: string
+      payment_policy_id:
+        type: string
+      price:
+        type: number
+      revenue_account_code:
+        maxLength: 30
+        type: string
+      revenue_account_name:
+        maxLength: 150
+        type: string
+      status:
+        $ref: '#/definitions/model.PaymentProductStatus'
+    required:
+    - code
+    - name
+    - payment_policy_id
+    type: object
+  domain.PaymentProductResponse:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      payment_policy_id:
+        type: string
+      price:
+        type: number
+      revenue_account_code:
+        type: string
+      revenue_account_name:
+        type: string
+      status:
+        $ref: '#/definitions/model.PaymentProductStatus'
+      tenant_id:
+        type: string
+    type: object
+  domain.PaymentProductUpdate:
+    properties:
+      code:
+        maxLength: 50
+        type: string
+      description:
+        type: string
+      name:
+        maxLength: 150
+        type: string
+      payment_policy_id:
+        type: string
+      price:
+        type: number
+      revenue_account_code:
+        maxLength: 30
+        type: string
+      revenue_account_name:
+        maxLength: 150
+        type: string
+      status:
+        $ref: '#/definitions/model.PaymentProductStatus'
+    type: object
+  domain.StudentObligationBulkCreate:
+    properties:
+      due_date:
+        type: string
+      payment_product_id:
+        type: string
+      student_ids:
+        items:
+          type: string
+        type: array
+    required:
+    - due_date
+    - payment_product_id
+    - student_ids
+    type: object
+  domain.StudentObligationCreate:
+    properties:
+      amount:
+        type: number
+      due_date:
+        type: string
+      notes:
+        type: string
+      payment_product_id:
+        type: string
+      student_id:
+        type: string
+    required:
+    - due_date
+    - payment_product_id
+    - student_id
+    type: object
+  domain.StudentObligationResponse:
+    properties:
+      due_date:
+        type: string
+      id:
+        type: string
+      issued_at:
+        type: string
+      notes:
+        type: string
+      original_amount:
+        type: number
+      outstanding_amount:
+        type: number
+      paid_amount:
+        type: number
+      payment_product_id:
+        type: string
+      period:
+        type: string
+      status:
+        $ref: '#/definitions/model.StudentObligationStatus'
+      student_id:
+        type: string
+    type: object
+  domain.StudentObligationUpdate:
+    properties:
+      due_date:
+        type: string
+      notes:
+        type: string
+    type: object
+  domain.StudentOutstandingResponse:
+    properties:
+      obligations:
+        items:
+          $ref: '#/definitions/domain.StudentObligationResponse'
+        type: array
+      student_id:
+        type: string
+      total_outstanding:
+        type: number
+    type: object
+  domain.SwaggerAuthLoginResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.AuthLoginResponse'
+        type: array
+    type: object
+  domain.SwaggerAuthProfileResponse:
+    properties:
+      data:
+        $ref: '#/definitions/domain.AuthProfileResponse'
+    type: object
+  domain.SwaggerBoolResponse:
+    properties:
+      data:
+        type: boolean
+    type: object
+  domain.SwaggerHealthResponse:
+    properties:
+      aaa:
+        example: code
+        type: string
+      status:
+        example: Berjalan Perfecto
+        type: string
+    type: object
+  domain.SwaggerLedgerEntryListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.LedgerEntryResponse'
+        type: array
+    type: object
+  domain.SwaggerLedgerEntryPageResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.LedgerEntryResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/shared.Pagination'
+    type: object
+  domain.SwaggerPaymentAllocationResultResponse:
+    properties:
+      data:
+        $ref: '#/definitions/domain.PaymentAllocationResult'
+    type: object
+  domain.SwaggerPaymentOrderPageResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.PaymentOrderResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/shared.Pagination'
+    type: object
+  domain.SwaggerPaymentOrderResponse:
+    properties:
+      data:
+        $ref: '#/definitions/domain.PaymentOrderResponse'
+    type: object
+  domain.SwaggerPaymentPolicyPageResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.PaymentPolicyResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/shared.Pagination'
+    type: object
+  domain.SwaggerPaymentPolicyResponse:
+    properties:
+      data:
+        $ref: '#/definitions/domain.PaymentPolicyResponse'
+    type: object
+  domain.SwaggerPaymentProductPageResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.PaymentProductResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/shared.Pagination'
+    type: object
+  domain.SwaggerPaymentProductResponse:
+    properties:
+      data:
+        $ref: '#/definitions/domain.PaymentProductResponse'
+    type: object
+  domain.SwaggerStudentObligationListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.StudentObligationResponse'
+        type: array
+    type: object
+  domain.SwaggerStudentObligationPageResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.StudentObligationResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/shared.Pagination'
+    type: object
+  domain.SwaggerStudentObligationResponse:
+    properties:
+      data:
+        $ref: '#/definitions/domain.StudentObligationResponse'
+    type: object
+  domain.SwaggerStudentOutstandingResponse:
+    properties:
+      data:
+        $ref: '#/definitions/domain.StudentOutstandingResponse'
+    type: object
+  model.PaymentOrderPaymentMethod:
+    enum:
+    - CASH
+    - BANK_TRANSFER
+    - VIRTUAL_ACCOUNT
+    - QRIS
+    - CREDIT_CARD
+    type: string
+    x-enum-varnames:
+    - PaymentMethodCash
+    - PaymentMethodBankTransfer
+    - PaymentMethodVirtualAccount
+    - PaymentMethodQRIS
+    - PaymentMethodCreditCard
+  model.PaymentOrderStatus:
+    enum:
+    - PENDING
+    - COMPLETED
+    - CANCELLED
+    - EXPIRED
+    type: string
+    x-enum-varnames:
+    - PaymentOrderStatusPending
+    - PaymentOrderStatusCompleted
+    - PaymentOrderStatusCancelled
+    - PaymentOrderStatusExpired
+  model.PaymentProductStatus:
+    enum:
+    - ACTIVE
+    - INACTIVE
+    type: string
+    x-enum-varnames:
+    - PaymentProductStatusActive
+    - PaymentProductStatusInactive
+  model.RoleCode:
+    enum:
+    - SUPER_ADMIN
+    - SCHOOL_ADMIN
+    - TREASURER
+    - TEACHER
+    - PARENT
+    - STUDENT
+    type: string
+    x-enum-varnames:
+    - RoleCodeSuperAdmin
+    - RoleCodeSchoolAdmin
+    - RoleCodeTreasurer
+    - RoleCodeTeacher
+    - RoleCodeParent
+    - RoleCodeStudent
+  model.StudentObligationStatus:
+    enum:
+    - PENDING
+    - PARTIAL
+    - PAID
+    - CLOSED
+    - CANCELLED
+    type: string
+    x-enum-varnames:
+    - StudentObligationStatusPending
+    - StudentObligationStatusPartial
+    - StudentObligationStatusPaid
+    - StudentObligationStatusClosed
+    - StudentObligationStatusCancelled
+  shared.Pagination:
+    properties:
+      current_page:
+        type: integer
+      next_page:
+        type: integer
+      previous_page:
+        type: integer
+      size:
+        type: integer
+      total_count:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@akadiapay.local
+    name: AkadiaPay API Support
+  description: |-
+    AkadiaPay is a school financial platform API for authentication, payment configuration, student billing, payment processing, allocation, and financial ledger.
+
+    Business process coverage:
+    - Authentication and tenant workspace access
+    - Payment policy configuration
+    - Payment product configuration
+    - Student obligation billing
+    - Parent/student outstanding bill visibility
+    - Payment order processing
+    - Payment allocation
+    - Financial ledger posting and reporting
+  license:
+    name: MIT
+  termsOfService: http://swagger.io/terms/
+  title: AkadiaPay API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user and returns JWT-based tenant and role access
+        contexts for the workspaces available to that user.
+      parameters:
+      - description: Login request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.AuthLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerAuthLoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Login and get tenant access tokens
+      tags:
+      - Auth
+  /auth/profile:
+    get:
+      description: Returns the active JWT-derived user, role, tenant, and optional
+        student context for the current access token.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerAuthProfileResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get authenticated profile
+      tags:
+      - Auth
+  /health:
+    get:
+      description: Returns the current application health payload and static metadata
+        exposed by the existing health endpoint.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerHealthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Health check
+      tags:
+      - Health
+  /ledger-entries:
+    get:
+      description: 'Lists debit and credit accounting entries generated by payment
+        processing and ledger posting. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Page size (default 15, max 100)
+        in: query
+        name: size
+        type: integer
+      - description: Filter by payment order ID
+        in: query
+        name: payment_order_id
+        type: string
+      - description: Filter by account code
+        in: query
+        name: account_code
+        type: string
+      - description: Filter entry date from (YYYY-MM-DD)
+        in: query
+        name: entry_date_from
+        type: string
+      - description: Filter entry date to (YYYY-MM-DD)
+        in: query
+        name: entry_date_to
+        type: string
+      - description: Search keyword for account code, account name, or description
+        in: query
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerLedgerEntryPageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List ledger entries
+      tags:
+      - Ledger Entry
+  /payment-orders:
+    get:
+      description: 'Lists payment transaction orders with pending, completed, and
+        cancelled statuses under the current finance portal access rules. Allowed
+        roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER, PARENT, STUDENT.'
+      parameters:
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Page size (default 15, max 100)
+        in: query
+        name: size
+        type: integer
+      - description: Search keyword for student, order number, reference number, or
+          notes
+        in: query
+        name: keyword
+        type: string
+      - description: Filter by student ID
+        in: query
+        name: student_id
+        type: string
+      - description: 'Filter by order status: PENDING, COMPLETED, CANCELLED, EXPIRED'
+        in: query
+        name: status
+        type: string
+      - description: 'Filter by payment method: CASH, BANK_TRANSFER, VIRTUAL_ACCOUNT,
+          QRIS, CREDIT_CARD'
+        in: query
+        name: payment_method
+        type: string
+      - description: Filter order date from (YYYY-MM-DD)
+        in: query
+        name: order_date_from
+        type: string
+      - description: Filter order date to (YYYY-MM-DD)
+        in: query
+        name: order_date_to
+        type: string
+      - description: 'Sort field: created_at, updated_at, student_id, order_number,
+          order_date, total_amount, status, payment_method, ledger_posted_at'
+        in: query
+        name: sort_by
+        type: string
+      - description: 'Sort direction: asc or desc'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentOrderPageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List payment orders
+      tags:
+      - Payment Order
+    post:
+      consumes:
+      - application/json
+      description: 'Creates a payment transaction order for the selected student obligation
+        balance using the existing payment method, outstanding amount, and overpayment
+        validation rules. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER, PARENT,
+        STUDENT.'
+      parameters:
+      - description: Payment order payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PaymentOrderCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentOrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create payment order
+      tags:
+      - Payment Order
+  /payment-orders/{id}:
+    get:
+      description: 'Returns one payment transaction order, including its pending,
+        completed, or cancelled status under current finance portal access rules.
+        Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER, PARENT, STUDENT.'
+      parameters:
+      - description: Payment order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentOrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get payment order by ID
+      tags:
+      - Payment Order
+  /payment-orders/{id}/allocate:
+    post:
+      consumes:
+      - application/json
+      description: 'Distributes one payment order to one or more student obligations
+        using the existing payment policy and no over-allocation validation rules.
+        Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER, PARENT, STUDENT.'
+      parameters:
+      - description: Payment order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payment allocation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PaymentAllocationAllocate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentAllocationResultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Allocate payment order
+      tags:
+      - Payment Allocation
+  /payment-orders/{id}/allocations:
+    get:
+      description: 'Returns allocation details for one payment order, including allocated
+        totals and remaining amount under current finance portal access rules. Allowed
+        roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER, PARENT, STUDENT.'
+      parameters:
+      - description: Payment order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentAllocationResultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get payment allocations by payment order
+      tags:
+      - Payment Allocation
+  /payment-orders/{id}/cancel:
+    post:
+      description: 'Cancels a pending payment transaction order when current business
+        rules allow it. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER, PARENT,
+        STUDENT.'
+      parameters:
+      - description: Payment order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentOrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Cancel payment order
+      tags:
+      - Payment Order
+  /payment-orders/{id}/ledger:
+    get:
+      description: 'Returns debit and credit accounting entries generated for one
+        payment order after ledger posting. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN,
+        TREASURER.'
+      parameters:
+      - description: Payment order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerLedgerEntryListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get ledger entries by payment order
+      tags:
+      - Ledger Entry
+  /payment-orders/{id}/post-ledger:
+    post:
+      description: 'Generates debit and credit accounting entries for a completed
+        payment order and remains idempotent for repeated post requests. Allowed roles:
+        SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Payment order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerLedgerEntryListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Post ledger for payment order
+      tags:
+      - Ledger Entry
+  /payment-policies:
+    get:
+      description: 'Lists payment policies that define how a bill can be paid, including
+        partial payment rules, minimum amount, minimum percentage, overpayment support,
+        and auto-close behavior. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Page size (default 15, max 100)
+        in: query
+        name: size
+        type: integer
+      - description: Search keyword for code or name
+        in: query
+        name: keyword
+        type: string
+      - description: Filter by partial payment support
+        in: query
+        name: allow_partial
+        type: boolean
+      - description: Filter by overpayment support
+        in: query
+        name: allow_over_payment
+        type: boolean
+      - description: Filter by auto close obligation behavior
+        in: query
+        name: auto_close_obligation
+        type: boolean
+      - description: 'Sort field: created_at, updated_at, code, name, minimum_amount,
+          minimum_percentage, allow_partial, allow_over_payment, auto_close_obligation'
+        in: query
+        name: sort_by
+        type: string
+      - description: 'Sort direction: asc or desc'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentPolicyPageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List payment policies
+      tags:
+      - Payment Policy
+    post:
+      consumes:
+      - application/json
+      description: 'Creates a payment policy that defines how a bill can be paid,
+        including partial payment rules, minimum amount, minimum percentage, overpayment
+        support, and auto-close behavior. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN,
+        TREASURER.'
+      parameters:
+      - description: Payment policy payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PaymentPolicyCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentPolicyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create payment policy
+      tags:
+      - Payment Policy
+  /payment-policies/{id}:
+    get:
+      description: 'Returns one payment policy that defines how a bill can be paid,
+        including partial payment, minimum amount, minimum percentage, overpayment,
+        and auto-close rules. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Payment policy ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentPolicyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get payment policy by ID
+      tags:
+      - Payment Policy
+    put:
+      consumes:
+      - application/json
+      description: 'Updates a payment policy using pointer-based PATCH-style payload
+        semantics while preserving current route behavior. Allowed roles: SUPER_ADMIN,
+        SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Payment policy ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payment policy update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PaymentPolicyUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentPolicyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update payment policy
+      tags:
+      - Payment Policy
+  /payment-policy:
+    get:
+      description: 'Lists payment policies that define how a bill can be paid, including
+        partial payment rules, minimum amount, minimum percentage, overpayment support,
+        and auto-close behavior. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Page size (default 15, max 100)
+        in: query
+        name: size
+        type: integer
+      - description: Search keyword for code or name
+        in: query
+        name: keyword
+        type: string
+      - description: Filter by partial payment support
+        in: query
+        name: allow_partial
+        type: boolean
+      - description: Filter by overpayment support
+        in: query
+        name: allow_over_payment
+        type: boolean
+      - description: Filter by auto close obligation behavior
+        in: query
+        name: auto_close_obligation
+        type: boolean
+      - description: 'Sort field: created_at, updated_at, code, name, minimum_amount,
+          minimum_percentage, allow_partial, allow_over_payment, auto_close_obligation'
+        in: query
+        name: sort_by
+        type: string
+      - description: 'Sort direction: asc or desc'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentPolicyPageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List payment policies
+      tags:
+      - Payment Policy
+    post:
+      consumes:
+      - application/json
+      description: 'Creates a payment policy that defines how a bill can be paid,
+        including partial payment rules, minimum amount, minimum percentage, overpayment
+        support, and auto-close behavior. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN,
+        TREASURER.'
+      parameters:
+      - description: Payment policy payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PaymentPolicyCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentPolicyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create payment policy
+      tags:
+      - Payment Policy
+  /payment-policy/{id}:
+    get:
+      description: 'Returns one payment policy that defines how a bill can be paid,
+        including partial payment, minimum amount, minimum percentage, overpayment,
+        and auto-close rules. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Payment policy ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentPolicyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get payment policy by ID
+      tags:
+      - Payment Policy
+    put:
+      consumes:
+      - application/json
+      description: 'Updates a payment policy using pointer-based PATCH-style payload
+        semantics while preserving current route behavior. Allowed roles: SUPER_ADMIN,
+        SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Payment policy ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payment policy update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PaymentPolicyUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentPolicyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update payment policy
+      tags:
+      - Payment Policy
+  /payment-product:
+    get:
+      description: 'Lists payment products that define what the school bills, including
+        the linked payment policy and revenue account mapping. Allowed roles: SUPER_ADMIN,
+        SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Page size (default 15, max 100)
+        in: query
+        name: size
+        type: integer
+      - description: Search keyword for code or name
+        in: query
+        name: keyword
+        type: string
+      - description: Filter by payment policy ID
+        in: query
+        name: payment_policy_id
+        type: string
+      - description: 'Filter by product status: ACTIVE or INACTIVE'
+        in: query
+        name: status
+        type: string
+      - description: 'Sort field: created_at, updated_at, code, name, price, status,
+          payment_policy_id, revenue_account_code, revenue_account_name'
+        in: query
+        name: sort_by
+        type: string
+      - description: 'Sort direction: asc or desc'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentProductPageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List payment products
+      tags:
+      - Payment Product
+    post:
+      consumes:
+      - application/json
+      description: 'Creates a payment product that defines what the school bills,
+        including the linked payment policy and revenue account mapping. Allowed roles:
+        SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Payment product payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PaymentProductCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create payment product
+      tags:
+      - Payment Product
+  /payment-product/{id}:
+    get:
+      description: 'Returns one payment product that defines what the school bills,
+        including the linked payment policy and revenue account mapping. Allowed roles:
+        SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Payment product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get payment product by ID
+      tags:
+      - Payment Product
+    put:
+      consumes:
+      - application/json
+      description: 'Updates a payment product that defines what the school bills while
+        preserving the linked payment policy and revenue account mapping rules. Allowed
+        roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Payment product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payment product update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PaymentProductUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update payment product
+      tags:
+      - Payment Product
+  /payment-products:
+    get:
+      description: 'Lists payment products that define what the school bills, including
+        the linked payment policy and revenue account mapping. Allowed roles: SUPER_ADMIN,
+        SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Page size (default 15, max 100)
+        in: query
+        name: size
+        type: integer
+      - description: Search keyword for code or name
+        in: query
+        name: keyword
+        type: string
+      - description: Filter by payment policy ID
+        in: query
+        name: payment_policy_id
+        type: string
+      - description: 'Filter by product status: ACTIVE or INACTIVE'
+        in: query
+        name: status
+        type: string
+      - description: 'Sort field: created_at, updated_at, code, name, price, status,
+          payment_policy_id, revenue_account_code, revenue_account_name'
+        in: query
+        name: sort_by
+        type: string
+      - description: 'Sort direction: asc or desc'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentProductPageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List payment products
+      tags:
+      - Payment Product
+    post:
+      consumes:
+      - application/json
+      description: 'Creates a payment product that defines what the school bills,
+        including the linked payment policy and revenue account mapping. Allowed roles:
+        SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Payment product payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PaymentProductCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create payment product
+      tags:
+      - Payment Product
+  /payment-products/{id}:
+    get:
+      description: 'Returns one payment product that defines what the school bills,
+        including the linked payment policy and revenue account mapping. Allowed roles:
+        SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Payment product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get payment product by ID
+      tags:
+      - Payment Product
+    put:
+      consumes:
+      - application/json
+      description: 'Updates a payment product that defines what the school bills while
+        preserving the linked payment policy and revenue account mapping rules. Allowed
+        roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Payment product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payment product update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PaymentProductUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerPaymentProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update payment product
+      tags:
+      - Payment Product
+  /student-obligations:
+    get:
+      description: 'Lists student financial obligations with outstanding, paid, closed,
+        and cancelled states using the current billing and tenant isolation rules.
+        Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Page size (default 15, max 100)
+        in: query
+        name: size
+        type: integer
+      - description: Search keyword for student or payment product
+        in: query
+        name: keyword
+        type: string
+      - description: Filter by student ID
+        in: query
+        name: student_id
+        type: string
+      - description: Filter by payment product ID
+        in: query
+        name: payment_product_id
+        type: string
+      - description: 'Filter by obligation status: PENDING, PARTIAL, PAID, CLOSED,
+          CANCELLED'
+        in: query
+        name: status
+        type: string
+      - description: Filter due date from (YYYY-MM-DD)
+        in: query
+        name: due_date_from
+        type: string
+      - description: Filter due date to (YYYY-MM-DD)
+        in: query
+        name: due_date_to
+        type: string
+      - description: 'Sort field: created_at, updated_at, student_id, payment_product_id,
+          period, original_amount, outstanding_amount, due_date, issued_at, status'
+        in: query
+        name: sort_by
+        type: string
+      - description: 'Sort direction: asc or desc'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerStudentObligationPageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List student obligations
+      tags:
+      - Student Obligation
+    post:
+      consumes:
+      - application/json
+      description: 'Creates one student financial obligation record with outstanding,
+        paid, closed, or cancelled lifecycle semantics driven by the existing billing
+        flow. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Student obligation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.StudentObligationCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerStudentObligationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create student obligation
+      tags:
+      - Student Obligation
+  /student-obligations/{id}:
+    delete:
+      description: 'Deletes a student obligation only when current business rules
+        allow it, without altering existing billing behavior. Allowed roles: SUPER_ADMIN,
+        SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Student obligation ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerBoolResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete student obligation
+      tags:
+      - Student Obligation
+    get:
+      description: 'Returns one student financial obligation record including outstanding
+        balance and current status. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Student obligation ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerStudentObligationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get student obligation by ID
+      tags:
+      - Student Obligation
+    put:
+      consumes:
+      - application/json
+      description: 'Updates mutable student obligation fields without changing the
+        billing flow semantics for outstanding, paid, closed, or cancelled states.
+        Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Student obligation ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Student obligation update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.StudentObligationUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerStudentObligationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update student obligation
+      tags:
+      - Student Obligation
+  /student-obligations/bulk:
+    post:
+      consumes:
+      - application/json
+      description: 'Assigns one payment product to multiple students and creates obligation
+        rows in bulk using the current billing rules. Allowed roles: SUPER_ADMIN,
+        SCHOOL_ADMIN, TREASURER.'
+      parameters:
+      - description: Bulk student obligation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.StudentObligationBulkCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerStudentObligationListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create student obligations in bulk
+      tags:
+      - Student Obligation
+  /students/{studentId}/outstanding:
+    get:
+      description: 'Returns outstanding student financial obligations visible to the
+        current finance portal user. Allowed roles: SUPER_ADMIN, SCHOOL_ADMIN, TREASURER,
+        PARENT, STUDENT.'
+      parameters:
+      - description: Student ID
+        in: path
+        name: studentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.SwaggerStudentOutstandingResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get outstanding obligations by student
+      tags:
+      - Student Outstanding
+schemes:
+- http
+securityDefinitions:
+  BearerAuth:
+    description: 'Type "Bearer" followed by a space and JWT token. Example: "Bearer
+      eyJhbGciOiJIUzI1NiIs..."'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
