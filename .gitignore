@@ -1,1 +1,8 @@
 tmp/
+test/phase1/.gocache
+test/phase2/.gocache
+test/phase3/.gocache
+test/phase4/.gocache
+test/phase5/.gocache
+test/phase6/.gocache
+test/phase7/.gocache

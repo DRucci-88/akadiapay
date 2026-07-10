@@ -55,7 +55,7 @@ func (s *paymentProductServiceImpl) Create(
 	authContext *security.AuthContext,
 	req *domain.PaymentProductCreate,
 ) (*model.PaymentProduct, error) {
-	if shared.FloatLess(req.Price, 0) {
+	if !shared.FloatGreater(req.Price, 0) {
 		return nil, shared.ErrPaymentProductPriceInvalid
 	}
 
@@ -136,7 +136,7 @@ func (s *paymentProductServiceImpl) Update(
 	}
 	normalizePaymentProductRevenueAccount(&merged)
 
-	if shared.FloatLess(merged.Price, 0) {
+	if !shared.FloatGreater(merged.Price, 0) {
 		return nil, shared.ErrPaymentProductPriceInvalid
 	}
 	if !isValidPaymentProductStatus(merged.Status) {
