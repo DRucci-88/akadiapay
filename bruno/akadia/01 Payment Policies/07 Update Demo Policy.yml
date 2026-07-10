@@ -1,0 +1,31 @@
+info:
+  name: 07 Update Demo Policy
+  type: http
+  seq: 7
+
+http:
+  method: PUT
+  url: "{{base_url}}/payment-policies/:id"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Demo Partial Policy Updated",
+        "description": "Updated through Bruno.",
+        "allow_partial": true,
+        "minimum_amount": 175000,
+        "minimum_percentage": 25,
+        "allow_over_payment": false,
+        "auto_close_obligation": true
+      }
+  params:
+    - name: id
+      value: "{{payment_policy_id}}"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

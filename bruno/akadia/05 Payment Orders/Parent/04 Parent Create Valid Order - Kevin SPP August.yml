@@ -1,0 +1,25 @@
+info:
+  name: 04 Parent Create Valid Order - Kevin SPP August
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{base_url}}/payment-orders"
+  body:
+    type: json
+    data: |-
+      {
+        "student_id": "{{student_id_kevin}}",
+        "amount": 500000,
+        "payment_method": "BANK_TRANSFER",
+        "payment_date": "2026-07-21T00:00:00Z",
+        "notes": "Bruno valid order for Kevin SPP August. Copy returned id to payment_order_id_new or payment_order_id_allocatable."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

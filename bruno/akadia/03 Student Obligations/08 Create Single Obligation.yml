@@ -1,0 +1,25 @@
+info:
+  name: 08 Create Single Obligation
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: "{{base_url}}/student-obligations"
+  body:
+    type: json
+    data: |-
+      {
+        "student_id": "{{student_id_kevin}}",
+        "payment_product_id": "{{payment_product_id_spp_aug}}",
+        "due_date": "2026-09-10T00:00:00Z",
+        "amount": 500000,
+        "notes": "Bruno single obligation create test. Use a new product/period combination to avoid duplicate unique index."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

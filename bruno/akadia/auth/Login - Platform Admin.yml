@@ -1,0 +1,22 @@
+info:
+  name: Login - Platform Admin
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{base_url}}/auth/login"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "admin@akadia.id",
+        "password": "password"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

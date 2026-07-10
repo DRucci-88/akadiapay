@@ -1,0 +1,17 @@
+info:
+  name: Profile - School SMAHB
+  type: http
+  seq: 24
+
+http:
+  method: GET
+  url: "{{base_url}}/auth/profile"
+  auth:
+    type: bearer
+    token: "{{token_school_smahb}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

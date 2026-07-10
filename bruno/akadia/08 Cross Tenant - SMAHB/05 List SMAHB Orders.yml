@@ -1,0 +1,25 @@
+info:
+  name: 05 List SMAHB Orders
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{base_url}}/payment-orders?keyword=PAY-SEED-SMAHB&page=1&size=20"
+  params:
+    - name: keyword
+      value: "PAY-SEED-SMAHB"
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: size
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

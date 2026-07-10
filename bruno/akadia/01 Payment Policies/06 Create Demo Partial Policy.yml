@@ -1,0 +1,28 @@
+info:
+  name: 06 Create Demo Partial Policy
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{base_url}}/payment-policies"
+  body:
+    type: json
+    data: |-
+      {
+        "code": "DEMO_PARTIAL_25_MIN_150K",
+        "name": "Demo Partial 25 Percent Minimum 150K",
+        "description": "Bruno demo policy for manual API testing.",
+        "allow_partial": true,
+        "minimum_amount": 150000,
+        "minimum_percentage": 25,
+        "allow_over_payment": false,
+        "auto_close_obligation": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

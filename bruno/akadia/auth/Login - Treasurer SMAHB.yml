@@ -1,0 +1,22 @@
+info:
+  name: Login - Treasurer SMAHB
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: "{{base_url}}/auth/login"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "finance@harapan.id",
+        "password": "password"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

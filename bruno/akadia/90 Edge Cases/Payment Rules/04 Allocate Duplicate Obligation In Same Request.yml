@@ -1,0 +1,34 @@
+info:
+  name: 04 Allocate Duplicate Obligation In Same Request
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{base_url}}/payment-orders/:id/allocate"
+  body:
+    type: json
+    data: |-
+      {
+        "allocations": [
+          {
+            "student_obligation_id": "{{student_obligation_id_kevin_study_tour}}",
+            "allocated_amount": 150000
+          },
+          {
+            "student_obligation_id": "{{student_obligation_id_kevin_study_tour}}",
+            "allocated_amount": 150000
+          }
+        ]
+      }
+  params:
+    - name: id
+      value: "{{payment_order_id_allocatable}}"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

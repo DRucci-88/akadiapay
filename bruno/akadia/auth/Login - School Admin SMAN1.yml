@@ -1,0 +1,22 @@
+info:
+  name: Login - School Admin SMAN1
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{base_url}}/auth/login"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "admin@sman1.id",
+        "password": "password"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,9 @@
+info:
+  name: 05 Payment Orders
+  type: folder
+  seq: 7
+
+request:
+  auth:
+    type: bearer
+    token: "{{token_parent}}"

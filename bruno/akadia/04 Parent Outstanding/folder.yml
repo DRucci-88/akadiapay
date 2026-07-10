@@ -1,0 +1,9 @@
+info:
+  name: 04 Parent Outstanding
+  type: folder
+  seq: 6
+
+request:
+  auth:
+    type: bearer
+    token: "{{token_parent}}"

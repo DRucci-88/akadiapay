@@ -1,0 +1,19 @@
+info:
+  name: 02 Budi Views Rucco Outstanding
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{base_url}}/students/:studentId/outstanding"
+  params:
+    - name: studentId
+      value: "{{student_id_rucco}}"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

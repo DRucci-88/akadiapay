@@ -1,0 +1,22 @@
+info:
+  name: Login - Parent Asep
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: "{{base_url}}/auth/login"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "asep.parent@gmail.com",
+        "password": "password"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

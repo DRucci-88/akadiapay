@@ -1,0 +1,22 @@
+info:
+  name: Login - School Admin SMAHB
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{base_url}}/auth/login"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "admin@harapan.id",
+        "password": "password"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

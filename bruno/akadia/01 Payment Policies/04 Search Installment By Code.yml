@@ -1,0 +1,25 @@
+info:
+  name: 04 Search Installment By Code
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{base_url}}/payment-policies?keyword=INSTALLMENT_10_MIN_50K&page=1&size=10"
+  params:
+    - name: keyword
+      value: "INSTALLMENT_10_MIN_50K"
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: size
+      value: "10"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

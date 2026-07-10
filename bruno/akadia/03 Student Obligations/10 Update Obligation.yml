@@ -1,0 +1,26 @@
+info:
+  name: 10 Update Obligation
+  type: http
+  seq: 10
+
+http:
+  method: PUT
+  url: "{{base_url}}/student-obligations/:id"
+  body:
+    type: json
+    data: |-
+      {
+        "due_date": "2026-09-20T00:00:00Z",
+        "notes": "Updated through Bruno."
+      }
+  params:
+    - name: id
+      value: "{{student_obligation_id}}"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

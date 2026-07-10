@@ -1,0 +1,9 @@
+info:
+  name: 01 Payment Policies
+  type: folder
+  seq: 3
+
+request:
+  auth:
+    type: bearer
+    token: "{{token_school}}"

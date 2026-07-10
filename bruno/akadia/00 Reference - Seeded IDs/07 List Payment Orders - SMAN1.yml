@@ -1,0 +1,25 @@
+info:
+  name: 07 List Payment Orders - SMAN1
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: "{{base_url}}/payment-orders?keyword=PAY-SEED-SMAN1&page=1&size=20"
+  params:
+    - name: keyword
+      value: "PAY-SEED-SMAN1"
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: size
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

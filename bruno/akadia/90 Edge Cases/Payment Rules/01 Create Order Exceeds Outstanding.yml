@@ -1,0 +1,25 @@
+info:
+  name: 01 Create Order Exceeds Outstanding
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{base_url}}/payment-orders"
+  body:
+    type: json
+    data: |-
+      {
+        "student_id": "{{student_id_kevin}}",
+        "amount": 99999999,
+        "payment_method": "BANK_TRANSFER",
+        "payment_date": "2026-07-21T00:00:00Z",
+        "notes": "Expected error: amount exceeds outstanding."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

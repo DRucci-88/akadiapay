@@ -1,0 +1,19 @@
+info:
+  name: 06 Cancel Completed Seed Order
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{base_url}}/payment-orders/:id/cancel"
+  params:
+    - name: id
+      value: "{{payment_order_id_completed}}"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

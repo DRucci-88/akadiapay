@@ -1,0 +1,9 @@
+info:
+  name: 02 Payment Products
+  type: folder
+  seq: 4
+
+request:
+  auth:
+    type: bearer
+    token: "{{token_school}}"

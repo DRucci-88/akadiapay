@@ -3,8 +3,66 @@ variables:
   - name: base_url
     value: http://localhost:8080
   - secret: true
-    name: token_student
+    name: token_platform
+  - secret: true
+    name: token_school
+  - secret: true
+    name: token_treasurer
   - secret: true
     name: token_parent
   - secret: true
-    name: token_school
+    name: token_student
+  - secret: true
+    name: token_school_smahb
+  - secret: true
+    name: token_treasurer_smahb
+  - secret: true
+    name: token_parent_smahb
+  - secret: true
+    name: token_student_smahb
+  - name: payment_policy_id
+    value: 
+  - name: payment_policy_id_full
+    value: 
+  - name: payment_policy_id_partial
+    value: 
+  - name: payment_policy_id_installment
+    value: 
+  - name: payment_product_id
+    value: 
+  - name: payment_product_id_spp_aug
+    value: 
+  - name: payment_product_id_study_tour
+    value: 
+  - name: payment_product_id_building
+    value: 
+  - name: payment_product_id_book
+    value: 
+  - name: student_id_kevin
+    value: 
+  - name: student_id_rucco
+    value: 
+  - name: student_id_gilis
+    value: 
+  - name: student_obligation_id
+    value: 
+  - name: student_obligation_id_kevin_spp_aug
+    value: 
+  - name: student_obligation_id_kevin_study_tour
+    value: 
+  - name: student_obligation_id_rucco_building
+    value: 
+  - name: student_obligation_id_gilis_study_tour
+    value: 
+  - name: payment_order_id
+    value: 
+  - name: payment_order_id_pending
+    value: 
+  - name: payment_order_id_completed
+    value: 
+  - name: payment_order_id_new
+    value: 
+  - name: payment_order_id_allocatable
+    value: 
+  - name: ledger_payment_order_id
+    value: 

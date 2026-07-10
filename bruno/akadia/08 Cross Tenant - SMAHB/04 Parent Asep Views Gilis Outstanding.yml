@@ -1,0 +1,21 @@
+info:
+  name: 04 Parent Asep Views Gilis Outstanding
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{base_url}}/students/:studentId/outstanding"
+  params:
+    - name: studentId
+      value: "{{student_id_gilis}}"
+      type: path
+  auth:
+    type: bearer
+    token: "{{token_parent_smahb}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

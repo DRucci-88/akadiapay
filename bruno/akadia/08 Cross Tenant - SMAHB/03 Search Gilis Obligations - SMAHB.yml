@@ -1,0 +1,25 @@
+info:
+  name: 03 Search Gilis Obligations - SMAHB
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{base_url}}/student-obligations?keyword=Gilis&page=1&size=20"
+  params:
+    - name: keyword
+      value: "Gilis"
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: size
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

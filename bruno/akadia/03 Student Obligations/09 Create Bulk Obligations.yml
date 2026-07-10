@@ -1,0 +1,26 @@
+info:
+  name: 09 Create Bulk Obligations
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: "{{base_url}}/student-obligations/bulk"
+  body:
+    type: json
+    data: |-
+      {
+        "payment_product_id": "{{payment_product_id}}",
+        "student_ids": [
+          "{{student_id_kevin}}",
+          "{{student_id_rucco}}"
+        ],
+        "due_date": "2026-10-10T00:00:00Z"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

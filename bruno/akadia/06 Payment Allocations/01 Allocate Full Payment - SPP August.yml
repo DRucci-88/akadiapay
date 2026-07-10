@@ -1,0 +1,30 @@
+info:
+  name: 01 Allocate Full Payment - SPP August
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{base_url}}/payment-orders/:id/allocate"
+  body:
+    type: json
+    data: |-
+      {
+        "allocations": [
+          {
+            "student_obligation_id": "{{student_obligation_id_kevin_spp_aug}}",
+            "allocated_amount": 500000
+          }
+        ]
+      }
+  params:
+    - name: id
+      value: "{{payment_order_id_allocatable}}"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

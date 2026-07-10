@@ -1,0 +1,22 @@
+info:
+  name: 08 List Ledger Entries - SMAN1
+  type: http
+  seq: 8
+
+http:
+  method: GET
+  url: "{{base_url}}/ledger-entries?page=1&size=20"
+  params:
+    - name: page
+      value: "1"
+      type: query
+    - name: size
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,22 @@
+info:
+  name: 02 List Payment Products - SMAHB
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{base_url}}/payment-products?page=1&size=50"
+  params:
+    - name: page
+      value: "1"
+      type: query
+    - name: size
+      value: "50"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

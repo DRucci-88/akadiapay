@@ -1,0 +1,25 @@
+info:
+  name: 02 Create Order Invalid Method
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{base_url}}/payment-orders"
+  body:
+    type: json
+    data: |-
+      {
+        "student_id": "{{student_id_kevin}}",
+        "amount": 100000,
+        "payment_method": "BITCOIN",
+        "payment_date": "2026-07-21T00:00:00Z",
+        "notes": "Expected error: invalid payment method."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

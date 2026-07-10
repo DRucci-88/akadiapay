@@ -1,0 +1,9 @@
+info:
+  name: 07 Ledger Entries
+  type: folder
+  seq: 9
+
+request:
+  auth:
+    type: bearer
+    token: "{{token_school}}"

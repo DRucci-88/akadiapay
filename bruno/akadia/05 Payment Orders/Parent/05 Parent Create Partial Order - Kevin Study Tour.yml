@@ -1,0 +1,25 @@
+info:
+  name: 05 Parent Create Partial Order - Kevin Study Tour
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{base_url}}/payment-orders"
+  body:
+    type: json
+    data: |-
+      {
+        "student_id": "{{student_id_kevin}}",
+        "amount": 300000,
+        "payment_method": "CASH",
+        "payment_date": "2026-07-21T00:00:00Z",
+        "notes": "Bruno valid partial payment order for Kevin Study Tour."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

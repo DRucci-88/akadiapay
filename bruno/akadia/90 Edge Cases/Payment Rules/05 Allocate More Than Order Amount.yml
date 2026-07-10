@@ -1,0 +1,30 @@
+info:
+  name: 05 Allocate More Than Order Amount
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{base_url}}/payment-orders/:id/allocate"
+  body:
+    type: json
+    data: |-
+      {
+        "allocations": [
+          {
+            "student_obligation_id": "{{student_obligation_id_kevin_study_tour}}",
+            "allocated_amount": 800000
+          }
+        ]
+      }
+  params:
+    - name: id
+      value: "{{payment_order_id_allocatable}}"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

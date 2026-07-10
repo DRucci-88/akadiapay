@@ -1,0 +1,9 @@
+info:
+  name: 08 Cross Tenant - SMAHB
+  type: folder
+  seq: 10
+
+request:
+  auth:
+    type: bearer
+    token: "{{token_school_smahb}}"

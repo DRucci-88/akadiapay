@@ -1,0 +1,28 @@
+info:
+  name: 06 Create Demo Product
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{base_url}}/payment-products"
+  body:
+    type: json
+    data: |-
+      {
+        "payment_policy_id": "{{payment_policy_id_full}}",
+        "code": "BRUNO_DEMO_PRODUCT_2026",
+        "name": "Bruno Demo Product 2026",
+        "description": "Created from Bruno for API testing.",
+        "revenue_account_code": "4199",
+        "revenue_account_name": "Other Education Revenue",
+        "price": 123000,
+        "status": "ACTIVE"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

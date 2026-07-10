@@ -1,0 +1,9 @@
+info:
+  name: 03 Student Obligations
+  type: folder
+  seq: 5
+
+request:
+  auth:
+    type: bearer
+    token: "{{token_school}}"

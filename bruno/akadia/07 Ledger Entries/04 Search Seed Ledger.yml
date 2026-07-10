@@ -1,0 +1,25 @@
+info:
+  name: 04 Search Seed Ledger
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: "{{base_url}}/ledger-entries?keyword=PAY-SEED&page=1&size=50"
+  params:
+    - name: keyword
+      value: "PAY-SEED"
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: size
+      value: "50"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,9 @@
+info:
+  name: 90 Edge Cases
+  type: folder
+  seq: 90
+
+request:
+  auth:
+    type: bearer
+    token: "{{token_school}}"
