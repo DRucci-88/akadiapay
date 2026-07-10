@@ -164,7 +164,7 @@ func (s *studentObligationServiceImpl) FindByID(
 	authContext *security.AuthContext,
 	id uuid.UUID,
 ) (*model.StudentObligation, error) {
-	studentObligation, err := s.studentObligationRepo.FirstByID(ctx, id)
+	studentObligation, err := s.studentObligationRepo.FirstByID(ctx, id, authContext.TenantID)
 	if err != nil {
 		return nil, err
 	}
@@ -191,7 +191,11 @@ func (s *studentObligationServiceImpl) Update(
 		return studentObligation, nil
 	}
 
-	if req.DueDate != nil && req.DueDate.IsZero() {
+	mergedDueDate := studentObligation.DueDate
+	if req.DueDate != nil {
+		mergedDueDate = *req.DueDate
+	}
+	if mergedDueDate.IsZero() {
 		return nil, shared.ErrStudentObligationDueDateRequired
 	}
 
@@ -298,7 +302,7 @@ func (s *studentObligationServiceImpl) prepareStudentObligation(
 	if amountRequest != nil {
 		amount = *amountRequest
 	}
-	if amount <= 0 {
+	if !shared.FloatGreater(amount, 0) {
 		return nil, shared.ErrStudentObligationAmountInvalid
 	}
 

@@ -24,9 +24,10 @@ func NewPaymentPolicyService(repo domain.RepositoryManagerPayment) domain.Paymen
 
 func (s *paymentPolicyServiceImpl) FirstByID(
 	ctx context.Context,
+	authContext *security.AuthContext,
 	id uuid.UUID,
 ) (*model.PaymentPolicy, error) {
-	return s.paymentPolicyRepo.FirstByID(ctx, id)
+	return s.paymentPolicyRepo.FirstByID(ctx, id, authContext.TenantID)
 }
 
 func (s *paymentPolicyServiceImpl) FindPaginate(
@@ -51,25 +52,6 @@ func (s *paymentPolicyServiceImpl) Create(
 	authContext *security.AuthContext,
 	req *domain.PaymentPolicyCreate,
 ) (*model.PaymentPolicy, error) {
-	if !req.AllowPartial {
-		req.MinimumAmount = 0
-		req.MinimumPercentage = 0
-	}
-
-	if req.MinimumAmount < 0 {
-		return nil, shared.ErrPaymentPolicyMinimumAmountInvalid
-	}
-
-	if req.MinimumPercentage < 0 || req.MinimumPercentage > 100 {
-		return nil, shared.ErrPaymentPolicyMinimumPercentageInvalid
-	}
-
-	if req.AllowPartial &&
-		req.MinimumAmount == 0 &&
-		req.MinimumPercentage == 0 {
-		return nil, shared.ErrPaymentPolicyMinimumPaymentRequired
-	}
-
 	paymentPolicy := &model.PaymentPolicy{
 		TenantID:            authContext.TenantID,
 		Code:                req.Code,
@@ -80,6 +62,10 @@ func (s *paymentPolicyServiceImpl) Create(
 		MinimumPercentage:   req.MinimumPercentage,
 		AllowOverPayment:    req.AllowOverPayment,
 		AutoCloseObligation: req.AutoCloseObligation,
+	}
+	normalizePaymentPolicyForValidation(paymentPolicy)
+	if err := validatePaymentPolicyState(paymentPolicy); err != nil {
+		return nil, err
 	}
 
 	if err := s.paymentPolicyRepo.Create(ctx, paymentPolicy); err != nil {
@@ -116,14 +102,89 @@ func (s *paymentPolicyServiceImpl) Update(
 	id uuid.UUID,
 	req *domain.PaymentPolicyUpdate,
 ) (*model.PaymentPolicy, error) {
-	_, err := s.paymentPolicyRepo.Update(
+	paymentPolicy, err := s.FirstByID(ctx, authContext, id)
+	if err != nil {
+		return nil, err
+	}
+
+	merged := *paymentPolicy
+	if req.Code != nil {
+		merged.Code = *req.Code
+	}
+	if req.Name != nil {
+		merged.Name = *req.Name
+	}
+	if req.Description != nil {
+		merged.Description = *req.Description
+	}
+	if req.AllowPartial != nil {
+		merged.AllowPartial = *req.AllowPartial
+	}
+	if req.MinimumAmount != nil {
+		merged.MinimumAmount = *req.MinimumAmount
+	}
+	if req.MinimumPercentage != nil {
+		merged.MinimumPercentage = *req.MinimumPercentage
+	}
+	if req.AllowOverPayment != nil {
+		merged.AllowOverPayment = *req.AllowOverPayment
+	}
+	if req.AutoCloseObligation != nil {
+		merged.AutoCloseObligation = *req.AutoCloseObligation
+	}
+
+	normalizePaymentPolicyForValidation(&merged)
+	if err := validatePaymentPolicyState(&merged); err != nil {
+		return nil, err
+	}
+
+	if !merged.AllowPartial {
+		zero := 0.0
+		req.MinimumAmount = &zero
+		req.MinimumPercentage = &zero
+	}
+
+	_, err = s.paymentPolicyRepo.Update(
 		ctx,
 		id,
 		authContext.TenantID,
 		req,
 	)
+	if err != nil {
+		return nil, err
+	}
 
-	paymentPolicy, err := s.FirstByID(ctx, id)
+	paymentPolicy, err = s.FirstByID(ctx, authContext, id)
 
 	return paymentPolicy, err
+}
+
+func normalizePaymentPolicyForValidation(
+	paymentPolicy *model.PaymentPolicy,
+) {
+	if !paymentPolicy.AllowPartial {
+		paymentPolicy.MinimumAmount = 0
+		paymentPolicy.MinimumPercentage = 0
+	}
+}
+
+func validatePaymentPolicyState(
+	paymentPolicy *model.PaymentPolicy,
+) error {
+	if shared.FloatLess(paymentPolicy.MinimumAmount, 0) {
+		return shared.ErrPaymentPolicyMinimumAmountInvalid
+	}
+
+	if shared.FloatLess(paymentPolicy.MinimumPercentage, 0) ||
+		shared.FloatGreater(paymentPolicy.MinimumPercentage, 100) {
+		return shared.ErrPaymentPolicyMinimumPercentageInvalid
+	}
+
+	if paymentPolicy.AllowPartial &&
+		shared.FloatIsZero(paymentPolicy.MinimumAmount) &&
+		shared.FloatIsZero(paymentPolicy.MinimumPercentage) {
+		return shared.ErrPaymentPolicyMinimumPaymentRequired
+	}
+
+	return nil
 }

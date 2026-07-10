@@ -18,6 +18,18 @@ type paymentPolicyRepositoryImpl struct {
 	query gorm.Interface[model.PaymentPolicy]
 }
 
+var paymentPolicySortableColumns = map[string]string{
+	"created_at":            generated.BaseModel.CreatedAt.Column().Name,
+	"updated_at":            generated.BaseModel.UpdatedAt.Column().Name,
+	"code":                  generated.PaymentPolicy.Code.Column().Name,
+	"name":                  generated.PaymentPolicy.Name.Column().Name,
+	"minimum_amount":        generated.PaymentPolicy.MinimumAmount.Column().Name,
+	"minimum_percentage":    generated.PaymentPolicy.MinimumPercentage.Column().Name,
+	"allow_partial":         generated.PaymentPolicy.AllowPartial.Column().Name,
+	"allow_over_payment":    generated.PaymentPolicy.AllowOverPayment.Column().Name,
+	"auto_close_obligation": generated.PaymentPolicy.AutoCloseObligation.Column().Name,
+}
+
 func (r *RepositoryManagerPaymentImpl) PaymentPolicy() domain.PaymentPolicyRepository {
 	return &paymentPolicyRepositoryImpl{
 		db:    r.db,
@@ -51,9 +63,11 @@ func (r *paymentPolicyRepositoryImpl) Paginate(
 func (r *paymentPolicyRepositoryImpl) FirstByID(
 	ctx context.Context,
 	id uuid.UUID,
+	tenantID uuid.UUID,
 ) (*model.PaymentPolicy, error) {
 	paymentPolicy, err := r.query.
 		Where(generated.BaseModel.ID.Eq(id)).
+		Where(generated.PaymentPolicy.TenantID.Eq(tenantID)).
 		First(ctx)
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -68,31 +82,43 @@ func (r *paymentPolicyRepositoryImpl) FindPaginate(
 	filter *domain.PaymentPolicyFilter,
 	authContext *security.AuthContext,
 ) (*shared.Page[model.PaymentPolicy], error) {
-	chain := r.query.Scopes()
+	chain := r.query.
+		Scopes().
+		Where(generated.PaymentPolicy.TenantID.Eq(authContext.TenantID))
 
-	if filter == nil {
-		return r.Paginate(ctx, pageable, chain)
-	}
-
-	chain = chain.Where(generated.PaymentPolicy.TenantID.Eq(authContext.TenantID))
-
-	if filter.Keyword != nil {
+	if filter != nil && filter.Keyword != nil {
 		chain = chain.
 			Where(generated.PaymentPolicy.Code.ILike(*filter.Keyword)).
 			Or(generated.PaymentPolicy.Name.ILike(*filter.Keyword))
 	}
-	if filter.AllowPartial != nil {
+	if filter != nil && filter.AllowPartial != nil {
 		chain = chain.
 			Where(generated.PaymentPolicy.AllowPartial.Eq(*filter.AllowPartial))
 	}
-	if filter.AllowOverPayment != nil {
+	if filter != nil && filter.AllowOverPayment != nil {
 		chain = chain.
 			Where(generated.PaymentPolicy.AllowOverPayment.Eq(*filter.AllowOverPayment))
 	}
-	if filter.AutoCloseObligation != nil {
+	if filter != nil && filter.AutoCloseObligation != nil {
 		chain = chain.
 			Where(generated.PaymentPolicy.AutoCloseObligation.Eq(*filter.AutoCloseObligation))
 	}
+
+	var sortBy *string
+	var order *string
+	if filter != nil {
+		sortBy = filter.SortBy
+		order = filter.Order
+	}
+	chain = chain.Order(
+		shared.ResolveSortClause(
+			sortBy,
+			order,
+			paymentPolicySortableColumns,
+			generated.BaseModel.CreatedAt.Column().Name,
+			"DESC",
+		),
+	)
 
 	return r.Paginate(ctx, pageable, chain)
 }

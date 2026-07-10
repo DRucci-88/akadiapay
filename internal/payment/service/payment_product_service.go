@@ -47,15 +47,7 @@ func (s *paymentProductServiceImpl) FindByID(
 	id uuid.UUID,
 	preloads ...model.PaymentProductPreload,
 ) (*model.PaymentProduct, error) {
-	paymentProduct, err := s.paymentProductRepo.FindByID(ctx, id, preloads...)
-	if err != nil {
-		return nil, err
-	}
-	if paymentProduct.TenantID != authContext.TenantID {
-		return nil, shared.ErrPaymentProductNotFound
-	}
-
-	return paymentProduct, nil
+	return s.paymentProductRepo.FindByID(ctx, id, authContext.TenantID, preloads...)
 }
 
 func (s *paymentProductServiceImpl) Create(
@@ -63,7 +55,7 @@ func (s *paymentProductServiceImpl) Create(
 	authContext *security.AuthContext,
 	req *domain.PaymentProductCreate,
 ) (*model.PaymentProduct, error) {
-	if req.Price < 0 {
+	if shared.FloatLess(req.Price, 0) {
 		return nil, shared.ErrPaymentProductPriceInvalid
 	}
 
@@ -75,23 +67,24 @@ func (s *paymentProductServiceImpl) Create(
 		return nil, shared.ErrPaymentProductStatusInvalid
 	}
 
-	paymentPolicy, err := s.paymentPolicyRepo.FirstByID(ctx, req.PaymentPolicyID)
+	paymentPolicy, err := s.paymentPolicyRepo.FirstByID(ctx, req.PaymentPolicyID, authContext.TenantID)
 	if err != nil {
 		return nil, err
 	}
-	if paymentPolicy.TenantID != authContext.TenantID {
-		return nil, shared.ErrPaymentPolicyNotFound
-	}
+	_ = paymentPolicy
 
 	paymentProduct := &model.PaymentProduct{
-		TenantID:        authContext.TenantID,
-		PaymentPolicyID: req.PaymentPolicyID,
-		Code:            req.Code,
-		Name:            req.Name,
-		Description:     req.Description,
-		Price:           req.Price,
-		Status:          status,
+		TenantID:           authContext.TenantID,
+		PaymentPolicyID:    req.PaymentPolicyID,
+		Code:               req.Code,
+		Name:               req.Name,
+		Description:        req.Description,
+		RevenueAccountCode: req.RevenueAccountCode,
+		RevenueAccountName: req.RevenueAccountName,
+		Price:              req.Price,
+		Status:             status,
 	}
+	normalizePaymentProductRevenueAccount(paymentProduct)
 
 	if err := s.paymentProductRepo.Create(ctx, paymentProduct); err != nil {
 		return nil, err
@@ -106,27 +99,54 @@ func (s *paymentProductServiceImpl) Update(
 	id uuid.UUID,
 	req *domain.PaymentProductUpdate,
 ) (*model.PaymentProduct, error) {
+	paymentProduct, err := s.FindByID(ctx, authContext, id)
+	if err != nil {
+		return nil, err
+	}
+
+	merged := *paymentProduct
 	if req.PaymentPolicyID != nil {
-		paymentPolicy, err := s.paymentPolicyRepo.FirstByID(ctx, *req.PaymentPolicyID)
+		paymentPolicy, err := s.paymentPolicyRepo.FirstByID(ctx, *req.PaymentPolicyID, authContext.TenantID)
 		if err != nil {
 			return nil, err
 		}
-		if paymentPolicy.TenantID != authContext.TenantID {
-			return nil, shared.ErrPaymentPolicyNotFound
-		}
+		_ = paymentPolicy
+		merged.PaymentPolicyID = *req.PaymentPolicyID
+	}
+	if req.Code != nil {
+		merged.Code = *req.Code
+	}
+	if req.Name != nil {
+		merged.Name = *req.Name
+	}
+	if req.Description != nil {
+		merged.Description = *req.Description
+	}
+	if req.RevenueAccountCode != nil {
+		merged.RevenueAccountCode = *req.RevenueAccountCode
+	}
+	if req.RevenueAccountName != nil {
+		merged.RevenueAccountName = *req.RevenueAccountName
 	}
 	if req.Price != nil {
-		if *req.Price < 0 {
-			return nil, shared.ErrPaymentProductPriceInvalid
-		}
+		merged.Price = *req.Price
 	}
 	if req.Status != nil {
-		if !isValidPaymentProductStatus(*req.Status) {
-			return nil, shared.ErrPaymentProductStatusInvalid
-		}
+		merged.Status = *req.Status
+	}
+	normalizePaymentProductRevenueAccount(&merged)
+
+	if shared.FloatLess(merged.Price, 0) {
+		return nil, shared.ErrPaymentProductPriceInvalid
+	}
+	if !isValidPaymentProductStatus(merged.Status) {
+		return nil, shared.ErrPaymentProductStatusInvalid
 	}
 
-	_, err := s.paymentProductRepo.Update(
+	req.RevenueAccountCode = &merged.RevenueAccountCode
+	req.RevenueAccountName = &merged.RevenueAccountName
+
+	_, err = s.paymentProductRepo.Update(
 		ctx,
 		id,
 		authContext.TenantID,

@@ -26,9 +26,16 @@ func (r *RepositoryManagerPaymentImpl) LedgerEntry() domain.LedgerEntryRepositor
 func (r *ledgerEntryRepositoryImpl) FindByPaymentOrderID(
 	ctx context.Context,
 	paymentOrderID uuid.UUID,
+	tenantID uuid.UUID,
 ) ([]model.LedgerEntry, error) {
+	paymentOrderTenantSubQuery := r.db.
+		Model(&model.PaymentOrder{}).
+		Select("id").
+		Where("tenant_id = ?", tenantID)
+
 	return r.query.
 		Where(generated.LedgerEntry.PaymentOrderID.Eq(paymentOrderID)).
+		Where("payment_order_id IN (?)", paymentOrderTenantSubQuery).
 		Order("created_at ASC").
 		Find(ctx)
 }
@@ -36,9 +43,16 @@ func (r *ledgerEntryRepositoryImpl) FindByPaymentOrderID(
 func (r *ledgerEntryRepositoryImpl) ExistsByPaymentOrderID(
 	ctx context.Context,
 	paymentOrderID uuid.UUID,
+	tenantID uuid.UUID,
 ) (bool, error) {
+	paymentOrderTenantSubQuery := r.db.
+		Model(&model.PaymentOrder{}).
+		Select("id").
+		Where("tenant_id = ?", tenantID)
+
 	total, err := r.query.
 		Where(generated.LedgerEntry.PaymentOrderID.Eq(paymentOrderID)).
+		Where("payment_order_id IN (?)", paymentOrderTenantSubQuery).
 		Count(ctx, "*")
 	if err != nil {
 		return false, err

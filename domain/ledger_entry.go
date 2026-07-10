@@ -40,10 +40,12 @@ type LedgerEntryRepository interface {
 	FindByPaymentOrderID(
 		ctx context.Context,
 		paymentOrderID uuid.UUID,
+		tenantID uuid.UUID,
 	) ([]model.LedgerEntry, error)
 	ExistsByPaymentOrderID(
 		ctx context.Context,
 		paymentOrderID uuid.UUID,
+		tenantID uuid.UUID,
 	) (bool, error)
 	CreateInBatches(
 		ctx context.Context,

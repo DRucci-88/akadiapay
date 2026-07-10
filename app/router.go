@@ -3,6 +3,7 @@ package app
 import (
 	"akadia/domain"
 	"akadia/internal/platform/middleware"
+	"akadia/model"
 	"akadia/model/generated"
 
 	"github.com/gin-gonic/gin"
@@ -24,23 +25,43 @@ func NewRouter(
 		c.JSON(200, gin.H{"status": "Berjalan Perfecto", "aaa": generated.PaymentPolicy.Code.Column().Name})
 	})
 
+	financeAdminRoles := m.Roles(
+		model.RoleCodeSuperAdmin,
+		model.RoleCodeSchoolAdmin,
+		model.RoleCodeTreasurer,
+	)
+	financePortalRoles := m.Roles(
+		model.RoleCodeSuperAdmin,
+		model.RoleCodeSchoolAdmin,
+		model.RoleCodeTreasurer,
+		model.RoleCodeParent,
+		model.RoleCodeStudent,
+	)
+
 	authApi := r.Group("/auth")
 	authApi.POST("/login", auth.Login)
 	authApi.GET("/profile", m.JWT, auth.Profile)
 
-	paymentPolicyApi := r.Group("/payment-policy", m.JWT)
-	paymentPolicyApi.GET("/:id", paymentPolicy.FindByID)
-	paymentPolicyApi.GET("", paymentPolicy.FindAll)
-	paymentPolicyApi.PUT("/:id", paymentPolicy.Update)
-	paymentPolicyApi.POST("", paymentPolicy.Create)
+	registerPaymentPolicyRoutes := func(group *gin.RouterGroup) {
+		group.GET("/:id", paymentPolicy.FindByID)
+		group.GET("", paymentPolicy.FindAll)
+		group.PUT("/:id", paymentPolicy.Update)
+		group.POST("", paymentPolicy.Create)
+	}
+	registerPaymentProductRoutes := func(group *gin.RouterGroup) {
+		group.GET("/:id", paymentProduct.FindByID)
+		group.GET("", paymentProduct.FindAll)
+		group.PUT("/:id", paymentProduct.Update)
+		group.POST("", paymentProduct.Create)
+	}
 
-	paymentProductApi := r.Group("/payment-product", m.JWT)
-	paymentProductApi.GET("/:id", paymentProduct.FindByID)
-	paymentProductApi.GET("", paymentProduct.FindAll)
-	paymentProductApi.PUT("/:id", paymentProduct.Update)
-	paymentProductApi.POST("", paymentProduct.Create)
+	registerPaymentPolicyRoutes(r.Group("/payment-policy", m.JWT, financeAdminRoles))
+	registerPaymentPolicyRoutes(r.Group("/payment-policies", m.JWT, financeAdminRoles))
 
-	studentObligationApi := r.Group("/student-obligations", m.JWT)
+	registerPaymentProductRoutes(r.Group("/payment-product", m.JWT, financeAdminRoles))
+	registerPaymentProductRoutes(r.Group("/payment-products", m.JWT, financeAdminRoles))
+
+	studentObligationApi := r.Group("/student-obligations", m.JWT, financeAdminRoles)
 	studentObligationApi.GET("", studentObligation.FindAll)
 	studentObligationApi.GET("/:id", studentObligation.FindByID)
 	studentObligationApi.POST("/bulk", studentObligation.CreateBulk)
@@ -48,20 +69,20 @@ func NewRouter(
 	studentObligationApi.PUT("/:id", studentObligation.Update)
 	studentObligationApi.DELETE("/:id", studentObligation.Delete)
 
-	studentApi := r.Group("/students", m.JWT)
+	studentApi := r.Group("/students", m.JWT, financePortalRoles)
 	studentApi.GET("/:studentId/outstanding", studentObligation.OutstandingByStudentID)
 
-	paymentOrderApi := r.Group("/payment-orders", m.JWT)
+	paymentOrderApi := r.Group("/payment-orders", m.JWT, financePortalRoles)
 	paymentOrderApi.GET("", paymentOrder.FindAll)
 	paymentOrderApi.GET("/:id", paymentOrder.FindByID)
 	paymentOrderApi.POST("", paymentOrder.Create)
 	paymentOrderApi.POST("/:id/cancel", paymentOrder.Cancel)
 	paymentOrderApi.POST("/:id/allocate", paymentAllocation.Allocate)
 	paymentOrderApi.GET("/:id/allocations", paymentAllocation.FindByPaymentOrderID)
-	paymentOrderApi.GET("/:id/ledger", ledgerEntry.FindByPaymentOrderID)
-	paymentOrderApi.POST("/:id/post-ledger", ledgerEntry.PostPayment)
+	paymentOrderApi.GET("/:id/ledger", financeAdminRoles, ledgerEntry.FindByPaymentOrderID)
+	paymentOrderApi.POST("/:id/post-ledger", financeAdminRoles, ledgerEntry.PostPayment)
 
-	ledgerEntryApi := r.Group("/ledger-entries", m.JWT)
+	ledgerEntryApi := r.Group("/ledger-entries", m.JWT, financeAdminRoles)
 	ledgerEntryApi.GET("", ledgerEntry.FindAll)
 
 	return r

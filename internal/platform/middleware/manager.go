@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"akadia/domain"
+	"akadia/model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,4 +17,10 @@ func NewMiddlewareManager(
 	return &MiddlewareManager{
 		JWT: NewJWTMiddleware(appConfig),
 	}
+}
+
+func (m *MiddlewareManager) Roles(
+	allowedRoles ...model.RoleCode,
+) gin.HandlerFunc {
+	return NewRoleMiddleware(allowedRoles...)
 }

@@ -93,7 +93,12 @@ type StudentObligationRepository interface {
 	FirstByID(
 		ctx context.Context,
 		id uuid.UUID,
+		tenantID uuid.UUID,
 	) (*model.StudentObligation, error)
+	LockByIDs(
+		ctx context.Context,
+		ids []uuid.UUID,
+	) ([]model.StudentObligation, error)
 	Update(
 		ctx context.Context,
 		id uuid.UUID,

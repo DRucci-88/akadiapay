@@ -12,11 +12,25 @@ import (
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type studentObligationRepositoryImpl struct {
 	db    *gorm.DB
 	query gorm.Interface[model.StudentObligation]
+}
+
+var studentObligationSortableColumns = map[string]string{
+	"created_at":         generated.BaseModel.CreatedAt.Column().Name,
+	"updated_at":         generated.BaseModel.UpdatedAt.Column().Name,
+	"student_id":         generated.StudentObligation.StudentID.Column().Name,
+	"payment_product_id": generated.StudentObligation.PaymentProductID.Column().Name,
+	"period":             generated.StudentObligation.Period.Column().Name,
+	"original_amount":    generated.StudentObligation.OriginalAmount.Column().Name,
+	"outstanding_amount": generated.StudentObligation.OutstandingAmount.Column().Name,
+	"due_date":           generated.StudentObligation.DueDate.Column().Name,
+	"issued_at":          generated.StudentObligation.IssuedAt.Column().Name,
+	"status":             generated.StudentObligation.Status.Column().Name,
 }
 
 func (r *RepositoryManagerPaymentImpl) StudentObligation() domain.StudentObligationRepository {
@@ -84,11 +98,7 @@ func (r *studentObligationRepositoryImpl) FindPaginate(
 		Where("student_id IN (?)", studentTenantSubQuery).
 		Where("payment_product_id IN (?)", paymentProductTenantSubQuery)
 
-	if filter == nil {
-		return r.Paginate(ctx, pageable, chain)
-	}
-
-	if filter.Keyword != nil {
+	if filter != nil && filter.Keyword != nil {
 		keyword := "%" + *filter.Keyword + "%"
 		studentKeywordSubQuery := r.db.
 			Model(&model.Student{}).
@@ -107,26 +117,42 @@ func (r *studentObligationRepositoryImpl) FindPaginate(
 			paymentProductKeywordSubQuery,
 		)
 	}
-	if filter.StudentID != nil {
+	if filter != nil && filter.StudentID != nil {
 		chain = chain.
 			Where(generated.StudentObligation.StudentID.Eq(*filter.StudentID))
 	}
-	if filter.PaymentProductID != nil {
+	if filter != nil && filter.PaymentProductID != nil {
 		chain = chain.
 			Where(generated.StudentObligation.PaymentProductID.Eq(*filter.PaymentProductID))
 	}
-	if filter.Status != nil {
+	if filter != nil && filter.Status != nil {
 		chain = chain.
 			Where(generated.StudentObligation.Status.Eq(string(*filter.Status)))
 	}
-	if filter.DueDateFrom != nil {
+	if filter != nil && filter.DueDateFrom != nil {
 		chain = chain.
 			Where(generated.StudentObligation.DueDate.Gte(*filter.DueDateFrom))
 	}
-	if filter.DueDateTo != nil {
+	if filter != nil && filter.DueDateTo != nil {
 		chain = chain.
 			Where(generated.StudentObligation.DueDate.Lte(*filter.DueDateTo))
 	}
+
+	var sortBy *string
+	var order *string
+	if filter != nil {
+		sortBy = filter.SortBy
+		order = filter.Order
+	}
+	chain = chain.Order(
+		shared.ResolveSortClause(
+			sortBy,
+			order,
+			studentObligationSortableColumns,
+			generated.BaseModel.CreatedAt.Column().Name,
+			"DESC",
+		),
+	)
 
 	return r.Paginate(ctx, pageable, chain)
 }
@@ -168,9 +194,21 @@ func (r *studentObligationRepositoryImpl) FindOutstandingByStudentID(
 func (r *studentObligationRepositoryImpl) FirstByID(
 	ctx context.Context,
 	id uuid.UUID,
+	tenantID uuid.UUID,
 ) (*model.StudentObligation, error) {
+	studentTenantSubQuery := r.db.
+		Model(&model.Student{}).
+		Select("id").
+		Where("tenant_id = ?", tenantID)
+	paymentProductTenantSubQuery := r.db.
+		Model(&model.PaymentProduct{}).
+		Select("id").
+		Where("tenant_id = ?", tenantID)
+
 	studentObligation, err := r.query.
 		Where(generated.BaseModel.ID.Eq(id)).
+		Where("student_id IN (?)", studentTenantSubQuery).
+		Where("payment_product_id IN (?)", paymentProductTenantSubQuery).
 		First(ctx)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -180,6 +218,23 @@ func (r *studentObligationRepositoryImpl) FirstByID(
 	}
 
 	return &studentObligation, nil
+}
+
+func (r *studentObligationRepositoryImpl) LockByIDs(
+	ctx context.Context,
+	ids []uuid.UUID,
+) ([]model.StudentObligation, error) {
+	items := make([]model.StudentObligation, 0)
+	if err := r.db.
+		WithContext(ctx).
+		Clauses(clause.Locking{Strength: "UPDATE"}).
+		Where("id IN ?", ids).
+		Order("id ASC").
+		Find(&items).Error; err != nil {
+		return nil, err
+	}
+
+	return items, nil
 }
 
 func (r *studentObligationRepositoryImpl) Update(

@@ -6,10 +6,7 @@ import (
 	"akadia/model"
 	"context"
 	"fmt"
-	"log"
-	"math"
 	"sort"
-	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -23,9 +20,10 @@ type ledgerAccount struct {
 func postLedgerEntriesForPaymentOrder(
 	ctx context.Context,
 	repo domain.RepositoryManagerPayment,
+	tenantID uuid.UUID,
 	paymentOrderID uuid.UUID,
 ) error {
-	paymentOrder, err := repo.PaymentOrder().LockByID(ctx, paymentOrderID)
+	paymentOrder, err := repo.PaymentOrder().LockByID(ctx, paymentOrderID, tenantID)
 	if err != nil {
 		return err
 	}
@@ -36,7 +34,7 @@ func postLedgerEntriesForPaymentOrder(
 		return nil
 	}
 
-	exists, err := repo.LedgerEntry().ExistsByPaymentOrderID(ctx, paymentOrderID)
+	exists, err := repo.LedgerEntry().ExistsByPaymentOrderID(ctx, paymentOrderID, tenantID)
 	if err != nil {
 		return err
 	}
@@ -57,13 +55,13 @@ func postLedgerEntriesForPaymentOrder(
 	totalAllocated := 0.0
 	obligationIDs := make([]uuid.UUID, 0, len(allocations))
 	for _, allocation := range allocations {
-		if allocation.AllocatedAmount <= 0 {
+		if !shared.FloatGreater(allocation.AllocatedAmount, 0) {
 			return shared.ErrPaymentAllocationAmountInvalid
 		}
 		totalAllocated += allocation.AllocatedAmount
 		obligationIDs = append(obligationIDs, allocation.StudentObligationID)
 	}
-	if !sameAmount(totalAllocated, paymentOrder.TotalAmount) {
+	if !shared.FloatEqual(totalAllocated, paymentOrder.TotalAmount) {
 		return shared.ErrLedgerUnbalancedSource
 	}
 
@@ -141,7 +139,10 @@ func buildLedgerEntries(
 			return nil, shared.ErrPaymentProductNotFound
 		}
 
-		creditAccount := resolveLedgerCreditAccount(paymentProduct)
+		creditAccount, err := resolvePaymentProductRevenueAccount(paymentProduct)
+		if err != nil {
+			return nil, err
+		}
 		creditTotals[creditAccount.Code] += allocation.AllocatedAmount
 		creditNames[creditAccount.Code] = creditAccount.Name
 		debitTotal += allocation.AllocatedAmount
@@ -190,8 +191,8 @@ func validateLedgerEntries(entries []model.LedgerEntry) error {
 	totalCredit := 0.0
 
 	for _, entry := range entries {
-		hasDebit := entry.Debit > 0
-		hasCredit := entry.Credit > 0
+		hasDebit := shared.FloatGreater(entry.Debit, 0)
+		hasCredit := shared.FloatGreater(entry.Credit, 0)
 
 		if hasDebit == hasCredit {
 			return shared.ErrLedgerUnbalanced
@@ -201,7 +202,7 @@ func validateLedgerEntries(entries []model.LedgerEntry) error {
 		totalCredit += entry.Credit
 	}
 
-	if !sameAmount(totalDebit, totalCredit) {
+	if !shared.FloatEqual(totalDebit, totalCredit) {
 		return shared.ErrLedgerUnbalanced
 	}
 
@@ -227,37 +228,6 @@ func resolveLedgerDebitAccount(
 	}
 }
 
-func resolveLedgerCreditAccount(
-	paymentProduct model.PaymentProduct,
-) *ledgerAccount {
-	normalized := strings.ToUpper(strings.TrimSpace(paymentProduct.Code + " " + paymentProduct.Name))
-
-	switch {
-	case strings.Contains(normalized, "SPP"), strings.Contains(normalized, "TUITION"):
-		return &ledgerAccount{Code: "4101", Name: "Tuition Revenue"}
-	case strings.Contains(normalized, "REGISTRATION"), strings.Contains(normalized, "DAFTAR"):
-		return &ledgerAccount{Code: "4102", Name: "Registration Revenue"}
-	case strings.Contains(normalized, "BUILDING"), strings.Contains(normalized, "GEDUNG"):
-		return &ledgerAccount{Code: "4103", Name: "Building Revenue"}
-	case strings.Contains(normalized, "UNIFORM"), strings.Contains(normalized, "SERAGAM"):
-		return &ledgerAccount{Code: "4104", Name: "Uniform Revenue"}
-	case strings.Contains(normalized, "BOOK"), strings.Contains(normalized, "BUKU"):
-		return &ledgerAccount{Code: "4105", Name: "Book Revenue"}
-	default:
-		log.Printf(
-			"ledger credit fallback payment_product_id=%s code=%s name=%s",
-			paymentProduct.ID,
-			paymentProduct.Code,
-			paymentProduct.Name,
-		)
-		return &ledgerAccount{Code: "4199", Name: "Other Education Revenue"}
-	}
-}
-
 func normalizeLedgerEntryDate(value time.Time) time.Time {
 	return time.Date(value.Year(), value.Month(), value.Day(), 0, 0, 0, 0, time.UTC)
-}
-
-func sameAmount(left float64, right float64) bool {
-	return math.Abs(left-right) < 0.0001
 }

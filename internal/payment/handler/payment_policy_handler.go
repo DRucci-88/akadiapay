@@ -57,6 +57,9 @@ func (h *paymentPolicyHandler) FindAll(c *gin.Context) {
 
 func (h *paymentPolicyHandler) FindByID(c *gin.Context) {
 	log.Println("PaymentPolicy.FindByID")
+	authContextValue, _ := c.Get(domain.ContextKeyAuth)
+	authContext := authContextValue.(*security.AuthContext)
+
 	idParam := c.Param("id")
 
 	id, err := uuid.Parse(idParam)
@@ -67,6 +70,7 @@ func (h *paymentPolicyHandler) FindByID(c *gin.Context) {
 
 	paymentPolicy, err := h.paymentPolicyService.FirstByID(
 		c.Request.Context(),
+		authContext,
 		id,
 	)
 

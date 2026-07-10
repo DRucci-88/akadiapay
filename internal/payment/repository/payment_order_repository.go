@@ -20,6 +20,18 @@ type paymentOrderRepositoryImpl struct {
 	query gorm.Interface[model.PaymentOrder]
 }
 
+var paymentOrderSortableColumns = map[string]string{
+	"created_at":       generated.BaseModel.CreatedAt.Column().Name,
+	"updated_at":       generated.BaseModel.UpdatedAt.Column().Name,
+	"student_id":       generated.PaymentOrder.StudentID.Column().Name,
+	"order_number":     generated.PaymentOrder.OrderNumber.Column().Name,
+	"order_date":       generated.PaymentOrder.OrderDate.Column().Name,
+	"total_amount":     generated.PaymentOrder.TotalAmount.Column().Name,
+	"status":           generated.PaymentOrder.Status.Column().Name,
+	"payment_method":   generated.PaymentOrder.PaymentMethod.Column().Name,
+	"ledger_posted_at": generated.PaymentOrder.LedgerPostedAt.Column().Name,
+}
+
 func (r *RepositoryManagerPaymentImpl) PaymentOrder() domain.PaymentOrderRepository {
 	return &paymentOrderRepositoryImpl{
 		db:    r.db,
@@ -79,11 +91,7 @@ func (r *paymentOrderRepositoryImpl) FindPaginate(
 		}
 	}
 
-	if filter == nil {
-		return r.Paginate(ctx, pageable, chain)
-	}
-
-	if filter.Keyword != nil {
+	if filter != nil && filter.Keyword != nil {
 		keyword := "%" + *filter.Keyword + "%"
 		studentKeywordSubQuery := r.db.
 			Model(&model.Student{}).
@@ -99,26 +107,42 @@ func (r *paymentOrderRepositoryImpl) FindPaginate(
 			keyword,
 		)
 	}
-	if filter.StudentID != nil {
+	if filter != nil && filter.StudentID != nil {
 		chain = chain.
 			Where(generated.PaymentOrder.StudentID.Eq(*filter.StudentID))
 	}
-	if filter.Status != nil {
+	if filter != nil && filter.Status != nil {
 		chain = chain.
 			Where(generated.PaymentOrder.Status.Eq(string(*filter.Status)))
 	}
-	if filter.PaymentMethod != nil {
+	if filter != nil && filter.PaymentMethod != nil {
 		chain = chain.
 			Where(generated.PaymentOrder.PaymentMethod.Eq(string(*filter.PaymentMethod)))
 	}
-	if filter.OrderDateFrom != nil {
+	if filter != nil && filter.OrderDateFrom != nil {
 		chain = chain.
 			Where(generated.PaymentOrder.OrderDate.Gte(*filter.OrderDateFrom))
 	}
-	if filter.OrderDateTo != nil {
+	if filter != nil && filter.OrderDateTo != nil {
 		chain = chain.
 			Where(generated.PaymentOrder.OrderDate.Lte(*filter.OrderDateTo))
 	}
+
+	var sortBy *string
+	var order *string
+	if filter != nil {
+		sortBy = filter.SortBy
+		order = filter.Order
+	}
+	chain = chain.Order(
+		shared.ResolveSortClause(
+			sortBy,
+			order,
+			paymentOrderSortableColumns,
+			generated.BaseModel.CreatedAt.Column().Name,
+			"DESC",
+		),
+	)
 
 	return r.Paginate(ctx, pageable, chain)
 }
@@ -133,9 +157,11 @@ func (r *paymentOrderRepositoryImpl) Create(
 func (r *paymentOrderRepositoryImpl) FirstByID(
 	ctx context.Context,
 	id uuid.UUID,
+	tenantID uuid.UUID,
 ) (*model.PaymentOrder, error) {
 	paymentOrder, err := r.query.
 		Where(generated.BaseModel.ID.Eq(id)).
+		Where(generated.PaymentOrder.TenantID.Eq(tenantID)).
 		First(ctx)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -150,12 +176,14 @@ func (r *paymentOrderRepositoryImpl) FirstByID(
 func (r *paymentOrderRepositoryImpl) LockByID(
 	ctx context.Context,
 	id uuid.UUID,
+	tenantID uuid.UUID,
 ) (*model.PaymentOrder, error) {
 	var paymentOrder model.PaymentOrder
 	if err := r.db.
 		WithContext(ctx).
 		Clauses(clause.Locking{Strength: "UPDATE"}).
 		Where("id = ?", id).
+		Where("tenant_id = ?", tenantID).
 		First(&paymentOrder).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, shared.ErrPaymentOrderNotFound

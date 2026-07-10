@@ -25,5 +25,6 @@ func (LedgerEntry) TableName() string {
 }
 
 /*
-DEBIT (Menambah tagihan siswa), CREDIT (Mengurangi tagihan siswa)
+DEBIT menambah aset kas/bank, CREDIT mengakui pendapatan.
+Perubahan tagihan siswa dicatat di StudentObligation.
 */

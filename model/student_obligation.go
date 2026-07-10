@@ -36,6 +36,7 @@ const (
 	StudentObligationStatusPending   StudentObligationStatus = "PENDING"
 	StudentObligationStatusPartial   StudentObligationStatus = "PARTIAL"
 	StudentObligationStatusPaid      StudentObligationStatus = "PAID"
+	StudentObligationStatusClosed    StudentObligationStatus = "CLOSED"
 	StudentObligationStatusCancelled StudentObligationStatus = "CANCELLED"
 )
 

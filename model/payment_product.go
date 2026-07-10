@@ -15,6 +15,9 @@ type PaymentProduct struct {
 	Name        string `gorm:"type:varchar(150);not null"`
 	Description string `gorm:"type:text"`
 
+	RevenueAccountCode string `gorm:"type:varchar(30);default:'';not null"`
+	RevenueAccountName string `gorm:"type:varchar(150);default:'';not null"`
+
 	Price  float64              `gorm:"type:numeric(18,2);not null"`
 	Status PaymentProductStatus `gorm:"type:varchar(20);default:ACTIVE;not null"`
 

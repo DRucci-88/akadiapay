@@ -21,6 +21,7 @@ type PaymentPolicyHandler interface {
 type PaymentPolicyService interface {
 	FirstByID(
 		ctx context.Context,
+		authContext *security.AuthContext,
 		id uuid.UUID,
 	) (*model.PaymentPolicy, error)
 	FindPaginate(
@@ -51,6 +52,7 @@ type PaymentPolicyRepository interface {
 	FirstByID(
 		ctx context.Context,
 		id uuid.UUID,
+		tenantID uuid.UUID,
 	) (*model.PaymentPolicy, error)
 	FindPaginate(
 		ctx context.Context,

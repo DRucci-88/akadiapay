@@ -46,19 +46,23 @@ var (
 	ErrStudentObligationAllocated       = errors.New("Student Obligation has payment allocations")
 
 	// Payment Order
-	ErrPaymentOrderAmountInvalid       = errors.New("Payment Order amount invalid")
-	ErrPaymentOrderMethodInvalid       = errors.New("Payment Order payment method invalid")
-	ErrPaymentOrderDateRequired        = errors.New("Payment Order date required")
-	ErrPaymentOrderOutstandingRequired = errors.New("Outstanding bill required")
-	ErrPaymentOrderNotFound            = errors.New("Payment Order not found")
-	ErrPaymentOrderStatusInvalid       = errors.New("Payment Order status invalid")
-	ErrPaymentOrderAllocated           = errors.New("Payment Order has payment allocations")
-	ErrPaymentAllocationNotFound       = errors.New("Payment Allocation not found")
+	ErrPaymentOrderAmountInvalid            = errors.New("Payment Order amount invalid")
+	ErrPaymentOrderMethodInvalid            = errors.New("Payment Order payment method invalid")
+	ErrPaymentOrderDateRequired             = errors.New("Payment Order date required")
+	ErrPaymentOrderOutstandingRequired      = errors.New("Outstanding bill required")
+	ErrPaymentOrderAmountExceedsOutstanding = errors.New("Payment Order amount exceeds outstanding amount")
+	ErrPaymentOrderNotFound                 = errors.New("Payment Order not found")
+	ErrPaymentOrderStatusInvalid            = errors.New("Payment Order status invalid")
+	ErrPaymentOrderAllocated                = errors.New("Payment Order has payment allocations")
+	ErrPaymentAllocationNotFound            = errors.New("Payment Allocation not found")
 
 	// Payment Allocation
 	ErrPaymentAllocationRequired                 = errors.New("Payment Allocation required")
 	ErrPaymentAllocationAmountInvalid            = errors.New("Payment Allocation amount invalid")
 	ErrPaymentAllocationAmountExceedsOutstanding = errors.New("Payment Allocation exceeds outstanding amount")
+	ErrPaymentAllocationFullPaymentRequired      = errors.New("Payment Allocation must equal outstanding amount")
+	ErrPaymentAllocationBelowMinimumAmount       = errors.New("Payment Allocation below minimum amount")
+	ErrPaymentAllocationBelowMinimumPercentage   = errors.New("Payment Allocation below minimum percentage")
 	ErrPaymentAllocationTotalExceedsOrder        = errors.New("Payment Allocation total exceeds payment order amount")
 	ErrPaymentAllocationDuplicateObligation      = errors.New("Payment Allocation duplicate obligation")
 

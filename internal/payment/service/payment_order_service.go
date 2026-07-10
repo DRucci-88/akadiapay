@@ -58,7 +58,7 @@ func (s *paymentOrderServiceImpl) FindByID(
 	authContext *security.AuthContext,
 	id uuid.UUID,
 ) (*model.PaymentOrder, error) {
-	paymentOrder, err := s.paymentOrderRepo.FirstByID(ctx, id)
+	paymentOrder, err := s.paymentOrderRepo.FirstByID(ctx, id, authContext.TenantID)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (s *paymentOrderServiceImpl) Create(
 	if req.PaymentDate.IsZero() {
 		return nil, shared.ErrPaymentOrderDateRequired
 	}
-	if req.Amount <= 0 {
+	if !shared.FloatGreater(req.Amount, 0) {
 		return nil, shared.ErrPaymentOrderAmountInvalid
 	}
 	if !isValidPaymentOrderMethod(req.PaymentMethod) {
@@ -93,8 +93,11 @@ func (s *paymentOrderServiceImpl) Create(
 	if err != nil {
 		return nil, err
 	}
-	if totalOutstanding <= 0 {
+	if !shared.FloatGreater(totalOutstanding, 0) {
 		return nil, shared.ErrPaymentOrderOutstandingRequired
+	}
+	if shared.FloatGreater(req.Amount, totalOutstanding) {
+		return nil, shared.ErrPaymentOrderAmountExceedsOutstanding
 	}
 
 	now := time.Now().UTC()

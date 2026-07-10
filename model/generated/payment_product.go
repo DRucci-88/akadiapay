@@ -10,21 +10,25 @@ import (
 )
 
 var PaymentProduct = struct {
-	TenantID        field.Field[uuid.UUID]
-	PaymentPolicyID field.Field[uuid.UUID]
-	PaymentPolicy   field.Struct[model.PaymentPolicy]
-	Code            field.String
-	Name            field.String
-	Description     field.String
-	Price           field.Number[float64]
-	Status          field.String
+	TenantID           field.Field[uuid.UUID]
+	PaymentPolicyID    field.Field[uuid.UUID]
+	PaymentPolicy      field.Struct[model.PaymentPolicy]
+	Code               field.String
+	Name               field.String
+	Description        field.String
+	RevenueAccountCode field.String
+	RevenueAccountName field.String
+	Price              field.Number[float64]
+	Status             field.String
 }{
-	TenantID:        field.Field[uuid.UUID]{}.WithColumn("tenant_id"),
-	PaymentPolicyID: field.Field[uuid.UUID]{}.WithColumn("payment_policy_id"),
-	PaymentPolicy:   field.Struct[model.PaymentPolicy]{}.WithName("PaymentPolicy"),
-	Code:            field.String{}.WithColumn("code"),
-	Name:            field.String{}.WithColumn("name"),
-	Description:     field.String{}.WithColumn("description"),
-	Price:           field.Number[float64]{}.WithColumn("price"),
-	Status:          field.String{}.WithColumn("status"),
+	TenantID:           field.Field[uuid.UUID]{}.WithColumn("tenant_id"),
+	PaymentPolicyID:    field.Field[uuid.UUID]{}.WithColumn("payment_policy_id"),
+	PaymentPolicy:      field.Struct[model.PaymentPolicy]{}.WithName("PaymentPolicy"),
+	Code:               field.String{}.WithColumn("code"),
+	Name:               field.String{}.WithColumn("name"),
+	Description:        field.String{}.WithColumn("description"),
+	RevenueAccountCode: field.String{}.WithColumn("revenue_account_code"),
+	RevenueAccountName: field.String{}.WithColumn("revenue_account_name"),
+	Price:              field.Number[float64]{}.WithColumn("price"),
+	Status:             field.String{}.WithColumn("status"),
 }

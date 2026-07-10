@@ -6,6 +6,7 @@ import (
 	"akadia/internal/shared"
 	"akadia/model"
 	"context"
+	"sort"
 
 	"github.com/google/uuid"
 )
@@ -52,7 +53,7 @@ func (s *paymentAllocationServiceImpl) Allocate(
 	requestedAmounts := make(map[uuid.UUID]float64, len(req.Allocations))
 	totalRequested := 0.0
 	for _, allocation := range req.Allocations {
-		if allocation.AllocatedAmount <= 0 {
+		if !shared.FloatGreater(allocation.AllocatedAmount, 0) {
 			return nil, shared.ErrPaymentAllocationAmountInvalid
 		}
 		if _, exists := requestedAmounts[allocation.StudentObligationID]; exists {
@@ -62,40 +63,9 @@ func (s *paymentAllocationServiceImpl) Allocate(
 		requestedAmounts[allocation.StudentObligationID] = allocation.AllocatedAmount
 		totalRequested += allocation.AllocatedAmount
 	}
-
-	existingAllocations, err := s.paymentAllocationRepo.FindByPaymentOrderID(ctx, paymentOrderID)
-	if err != nil {
-		return nil, err
-	}
-
-	existingTotalAllocated := 0.0
-	existingAllocationMap := make(map[uuid.UUID]struct{}, len(existingAllocations))
-	for _, allocation := range existingAllocations {
-		existingTotalAllocated += allocation.AllocatedAmount
-		existingAllocationMap[allocation.StudentObligationID] = struct{}{}
-	}
-	for obligationID := range requestedAmounts {
-		if _, exists := existingAllocationMap[obligationID]; exists {
-			return nil, shared.ErrPaymentAllocationDuplicateObligation
-		}
-	}
-
-	if existingTotalAllocated+totalRequested > paymentOrder.TotalAmount {
-		return nil, shared.ErrPaymentAllocationTotalExceedsOrder
-	}
-
-	obligations, err := s.studentObligationRepo.FindByIDs(ctx, requestedObligationIDs)
-	if err != nil {
-		return nil, err
-	}
-	if len(obligations) != len(requestedObligationIDs) {
-		return nil, shared.ErrStudentObligationNotFound
-	}
-
-	obligationMap := make(map[uuid.UUID]model.StudentObligation, len(obligations))
-	for _, obligation := range obligations {
-		obligationMap[obligation.ID] = obligation
-	}
+	sort.Slice(requestedObligationIDs, func(i, j int) bool {
+		return requestedObligationIDs[i].String() < requestedObligationIDs[j].String()
+	})
 
 	newAllocations := make([]model.PaymentAllocation, 0, len(requestedObligationIDs))
 	type settlement struct {
@@ -105,44 +75,118 @@ func (s *paymentAllocationServiceImpl) Allocate(
 	}
 	settlements := make([]settlement, 0, len(requestedObligationIDs))
 
-	for _, obligationID := range requestedObligationIDs {
-		obligation, exists := obligationMap[obligationID]
-		if !exists {
-			return nil, shared.ErrStudentObligationNotFound
-		}
-		if obligation.StudentID != paymentOrder.StudentID {
-			return nil, shared.ErrStudentObligationNotFound
-		}
-
-		allocatedAmount := requestedAmounts[obligationID]
-		if allocatedAmount > obligation.OutstandingAmount {
-			return nil, shared.ErrPaymentAllocationAmountExceedsOutstanding
-		}
-
-		outstandingAmount := obligation.OutstandingAmount - allocatedAmount
-		status := model.StudentObligationStatusPartial
-		if outstandingAmount == 0 {
-			status = model.StudentObligationStatusPaid
-		}
-
-		newAllocations = append(newAllocations, model.PaymentAllocation{
-			PaymentOrderID:      paymentOrderID,
-			StudentObligationID: obligationID,
-			AllocatedAmount:     allocatedAmount,
-		})
-		settlements = append(settlements, settlement{
-			id:                obligationID,
-			outstandingAmount: outstandingAmount,
-			status:            status,
-		})
-	}
-
-	orderStatus := model.PaymentOrderStatusPending
-	if existingTotalAllocated+totalRequested == paymentOrder.TotalAmount {
-		orderStatus = model.PaymentOrderStatusCompleted
-	}
-
 	if err := s.repo.Transaction(ctx, func(repo domain.RepositoryManagerPayment) error {
+		lockedPaymentOrder, err := repo.PaymentOrder().LockByID(ctx, paymentOrderID, authContext.TenantID)
+		if err != nil {
+			return err
+		}
+		if lockedPaymentOrder.Status != model.PaymentOrderStatusPending {
+			return shared.ErrPaymentOrderStatusInvalid
+		}
+
+		existingAllocations, err := repo.PaymentAllocation().FindByPaymentOrderID(ctx, paymentOrderID)
+		if err != nil {
+			return err
+		}
+
+		existingTotalAllocated := 0.0
+		existingAllocationMap := make(map[uuid.UUID]struct{}, len(existingAllocations))
+		for _, allocation := range existingAllocations {
+			existingTotalAllocated += allocation.AllocatedAmount
+			existingAllocationMap[allocation.StudentObligationID] = struct{}{}
+		}
+		for obligationID := range requestedAmounts {
+			if _, exists := existingAllocationMap[obligationID]; exists {
+				return shared.ErrPaymentAllocationDuplicateObligation
+			}
+		}
+
+		if shared.FloatGreater(existingTotalAllocated+totalRequested, lockedPaymentOrder.TotalAmount) {
+			return shared.ErrPaymentAllocationTotalExceedsOrder
+		}
+
+		obligations, err := repo.StudentObligation().LockByIDs(ctx, requestedObligationIDs)
+		if err != nil {
+			return err
+		}
+		if len(obligations) != len(requestedObligationIDs) {
+			return shared.ErrStudentObligationNotFound
+		}
+
+		obligationMap := make(map[uuid.UUID]model.StudentObligation, len(obligations))
+		for _, obligation := range obligations {
+			obligationMap[obligation.ID] = obligation
+		}
+
+		paymentProductIDs := make([]uuid.UUID, 0, len(obligations))
+		for _, obligation := range obligations {
+			paymentProductIDs = append(paymentProductIDs, obligation.PaymentProductID)
+		}
+
+		paymentProducts, err := repo.PaymentProduct().FindByIDsIncludingDeleted(ctx, uniqueUUIDs(paymentProductIDs))
+		if err != nil {
+			return err
+		}
+
+		paymentProductMap := make(map[uuid.UUID]model.PaymentProduct, len(paymentProducts))
+		for _, paymentProduct := range paymentProducts {
+			paymentProductMap[paymentProduct.ID] = paymentProduct
+		}
+
+		newAllocations = newAllocations[:0]
+		settlements = settlements[:0]
+		for _, obligationID := range requestedObligationIDs {
+			obligation, exists := obligationMap[obligationID]
+			if !exists {
+				return shared.ErrStudentObligationNotFound
+			}
+			if obligation.StudentID != lockedPaymentOrder.StudentID {
+				return shared.ErrStudentObligationNotFound
+			}
+
+			paymentProduct, exists := paymentProductMap[obligation.PaymentProductID]
+			if !exists {
+				return shared.ErrPaymentProductNotFound
+			}
+			if paymentProduct.PaymentPolicy == nil {
+				return shared.ErrPaymentPolicyNotFound
+			}
+
+			allocatedAmount := requestedAmounts[obligationID]
+			if err := validateAllocationAgainstPaymentPolicy(
+				allocatedAmount,
+				obligation.OutstandingAmount,
+				paymentProduct.PaymentPolicy,
+			); err != nil {
+				return err
+			}
+
+			outstandingAmount := obligation.OutstandingAmount - allocatedAmount
+			status := model.StudentObligationStatusPartial
+			if shared.FloatIsZero(outstandingAmount) {
+				status = model.StudentObligationStatusPaid
+				if paymentProduct.PaymentPolicy.AutoCloseObligation {
+					status = model.StudentObligationStatusClosed
+				}
+			}
+
+			newAllocations = append(newAllocations, model.PaymentAllocation{
+				PaymentOrderID:      paymentOrderID,
+				StudentObligationID: obligationID,
+				AllocatedAmount:     allocatedAmount,
+			})
+			settlements = append(settlements, settlement{
+				id:                obligationID,
+				outstandingAmount: outstandingAmount,
+				status:            status,
+			})
+		}
+
+		orderStatus := model.PaymentOrderStatusPending
+		if shared.FloatEqual(existingTotalAllocated+totalRequested, lockedPaymentOrder.TotalAmount) {
+			orderStatus = model.PaymentOrderStatusCompleted
+		}
+
 		if err := repo.PaymentAllocation().CreateBatch(ctx, newAllocations); err != nil {
 			return err
 		}
@@ -160,7 +204,7 @@ func (s *paymentAllocationServiceImpl) Allocate(
 			return err
 		}
 		if orderStatus == model.PaymentOrderStatusCompleted {
-			if err := postLedgerEntriesForPaymentOrder(ctx, repo, paymentOrderID); err != nil {
+			if err := postLedgerEntriesForPaymentOrder(ctx, repo, authContext.TenantID, paymentOrderID); err != nil {
 				return err
 			}
 		}
@@ -200,4 +244,37 @@ func (s *paymentAllocationServiceImpl) FindByPaymentOrderID(
 		OrderStatus:     paymentOrder.Status,
 		Allocations:     domain.NewPaymentAllocationResponses(allocations),
 	}, nil
+}
+
+func validateAllocationAgainstPaymentPolicy(
+	allocatedAmount float64,
+	outstandingAmount float64,
+	paymentPolicy *model.PaymentPolicy,
+) error {
+	if shared.FloatGreater(allocatedAmount, outstandingAmount) {
+		return shared.ErrPaymentAllocationAmountExceedsOutstanding
+	}
+
+	if !paymentPolicy.AllowPartial && !shared.FloatEqual(allocatedAmount, outstandingAmount) {
+		return shared.ErrPaymentAllocationFullPaymentRequired
+	}
+
+	if paymentPolicy.AllowPartial {
+		if shared.FloatGreater(paymentPolicy.MinimumAmount, 0) &&
+			shared.FloatLess(allocatedAmount, paymentPolicy.MinimumAmount) {
+			return shared.ErrPaymentAllocationBelowMinimumAmount
+		}
+
+		minimumByPercentage := outstandingAmount * paymentPolicy.MinimumPercentage / 100
+		if shared.FloatGreater(paymentPolicy.MinimumPercentage, 0) &&
+			shared.FloatLess(allocatedAmount, minimumByPercentage) {
+			return shared.ErrPaymentAllocationBelowMinimumPercentage
+		}
+	}
+
+	if !paymentPolicy.AllowOverPayment && shared.FloatGreater(allocatedAmount, outstandingAmount) {
+		return shared.ErrPaymentAllocationAmountExceedsOutstanding
+	}
+
+	return nil
 }

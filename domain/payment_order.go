@@ -62,10 +62,12 @@ type PaymentOrderRepository interface {
 	FirstByID(
 		ctx context.Context,
 		id uuid.UUID,
+		tenantID uuid.UUID,
 	) (*model.PaymentOrder, error)
 	LockByID(
 		ctx context.Context,
 		id uuid.UUID,
+		tenantID uuid.UUID,
 	) (*model.PaymentOrder, error)
 	UpdateStatus(
 		ctx context.Context,

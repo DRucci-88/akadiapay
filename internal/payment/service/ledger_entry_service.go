@@ -41,7 +41,7 @@ func (s *ledgerEntryServiceImpl) PostPayment(
 	}
 
 	return s.repo.Transaction(ctx, func(repo domain.RepositoryManagerPayment) error {
-		return postLedgerEntriesForPaymentOrder(ctx, repo, paymentOrderID)
+		return postLedgerEntriesForPaymentOrder(ctx, repo, authContext.TenantID, paymentOrderID)
 	})
 }
 
@@ -58,7 +58,7 @@ func (s *ledgerEntryServiceImpl) FindByPaymentOrderID(
 		return nil, err
 	}
 
-	entries, err := s.ledgerEntryRepo.FindByPaymentOrderID(ctx, paymentOrderID)
+	entries, err := s.ledgerEntryRepo.FindByPaymentOrderID(ctx, paymentOrderID, authContext.TenantID)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (s *ledgerEntryServiceImpl) FindPaginate(
 
 func validateLedgerAccessRole(authContext *security.AuthContext) error {
 	switch authContext.RoleCode {
-	case model.RoleCodeSuperAdmin, model.RoleCodeSchoolAdmin:
+	case model.RoleCodeSuperAdmin, model.RoleCodeSchoolAdmin, model.RoleCodeTreasurer:
 		return nil
 	default:
 		return shared.ErrAuthUnauthorized

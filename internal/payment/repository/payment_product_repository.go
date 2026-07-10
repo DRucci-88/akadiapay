@@ -18,6 +18,18 @@ type paymentProductRepositoryImpl struct {
 	query gorm.Interface[model.PaymentProduct]
 }
 
+var paymentProductSortableColumns = map[string]string{
+	"created_at":           generated.BaseModel.CreatedAt.Column().Name,
+	"updated_at":           generated.BaseModel.UpdatedAt.Column().Name,
+	"code":                 generated.PaymentProduct.Code.Column().Name,
+	"name":                 generated.PaymentProduct.Name.Column().Name,
+	"price":                generated.PaymentProduct.Price.Column().Name,
+	"status":               generated.PaymentProduct.Status.Column().Name,
+	"payment_policy_id":    generated.PaymentProduct.PaymentPolicyID.Column().Name,
+	"revenue_account_code": generated.PaymentProduct.RevenueAccountCode.Column().Name,
+	"revenue_account_name": generated.PaymentProduct.RevenueAccountName.Column().Name,
+}
+
 func (r *RepositoryManagerPaymentImpl) PaymentProduct() domain.PaymentProductRepository {
 	return &paymentProductRepositoryImpl{
 		db:    r.db,
@@ -66,22 +78,34 @@ func (r *paymentProductRepositoryImpl) FindPaginate(
 		Scopes().
 		Where(generated.PaymentProduct.TenantID.Eq(authContext.TenantID))
 
-	if filter == nil {
-		return r.Paginate(ctx, pageable, chain)
-	}
-
-	if filter.Keyword != nil {
+	if filter != nil && filter.Keyword != nil {
 		chain = chain.
 			Where("(code ILIKE ? OR name ILIKE ?)", *filter.Keyword, *filter.Keyword)
 	}
-	if filter.PaymentPolicyID != nil {
+	if filter != nil && filter.PaymentPolicyID != nil {
 		chain = chain.
 			Where(generated.PaymentProduct.PaymentPolicyID.Eq(*filter.PaymentPolicyID))
 	}
-	if filter.Status != nil {
+	if filter != nil && filter.Status != nil {
 		chain = chain.
 			Where(generated.PaymentProduct.Status.Eq(string(*filter.Status)))
 	}
+
+	var sortBy *string
+	var order *string
+	if filter != nil {
+		sortBy = filter.SortBy
+		order = filter.Order
+	}
+	chain = chain.Order(
+		shared.ResolveSortClause(
+			sortBy,
+			order,
+			paymentProductSortableColumns,
+			generated.BaseModel.CreatedAt.Column().Name,
+			"DESC",
+		),
+	)
 
 	return r.Paginate(ctx, pageable, chain)
 }
@@ -89,10 +113,12 @@ func (r *paymentProductRepositoryImpl) FindPaginate(
 func (r *paymentProductRepositoryImpl) FindByID(
 	ctx context.Context,
 	id uuid.UUID,
+	tenantID uuid.UUID,
 	preloads ...model.PaymentProductPreload,
 ) (*model.PaymentProduct, error) {
 	paymentProduct, err := r.QueryWithPreloads(preloads...).
 		Where(generated.BaseModel.ID.Eq(id)).
+		Where(generated.PaymentProduct.TenantID.Eq(tenantID)).
 		First(ctx)
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -110,6 +136,7 @@ func (r *paymentProductRepositoryImpl) FindByIDsIncludingDeleted(
 	if err := r.db.
 		WithContext(ctx).
 		Unscoped().
+		Preload(string(model.PaymentProductPreloadPaymentPolicy)).
 		Where("id IN ?", ids).
 		Find(&items).Error; err != nil {
 		return nil, err
@@ -137,6 +164,8 @@ func (r *paymentProductRepositoryImpl) Update(
 	updates.SetIfNotNil(generated.PaymentProduct.Code.Column().Name, req.Code)
 	updates.SetIfNotNil(generated.PaymentProduct.Name.Column().Name, req.Name)
 	updates.SetIfNotNil(generated.PaymentProduct.Description.Column().Name, req.Description)
+	updates.SetIfNotNil(generated.PaymentProduct.RevenueAccountCode.Column().Name, req.RevenueAccountCode)
+	updates.SetIfNotNil(generated.PaymentProduct.RevenueAccountName.Column().Name, req.RevenueAccountName)
 	updates.SetIfNotNil(generated.PaymentProduct.Price.Column().Name, req.Price)
 	updates.SetIfNotNil(generated.PaymentProduct.Status.Column().Name, req.Status)
 
