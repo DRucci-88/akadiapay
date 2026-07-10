@@ -1,0 +1,71 @@
+@startuml
+title BP-01 - Tenant Onboarding and School Activation
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Super Admin|
+start
+:Receive school onboarding request;
+:Review school identity and administrative data;
+
+if (School data complete?) then (Yes)
+  :Create tenant record;
+  :Assign unique tenant code;
+  :Set tenant status to INACTIVE;
+else (No)
+  :Request missing or corrected information;
+  stop
+endif
+
+|Platform|
+:Create isolated tenant context;
+:Prepare default tenant configuration;
+:Prepare default roles and access scope;
+
+note right
+Business rules:
+- Every school is an independent tenant.
+- Financial data must be isolated by tenant.
+- Initial access uses UserTenantRole.
+- Inactive tenants cannot run financial operations.
+end note
+
+|Super Admin|
+:Create initial School Administrator account;
+:Assign SCHOOL_ADMIN role to the tenant;
+
+|School Administrator|
+:Receive account activation instructions;
+:Log in to the platform;
+:Review school profile and financial configuration;
+
+if (Configuration valid?) then (Yes)
+  :Confirm school setup;
+else (No)
+  :Update school profile and configuration;
+  :Confirm school setup;
+endif
+
+|Super Admin|
+:Activate tenant;
+
+|Platform|
+:Set tenant status to ACTIVE;
+:Allow tenant scoped access;
+:Record onboarding audit trail;
+:Notify School Administrator;
+
+|School Administrator|
+:Access active school workspace;
+stop
+@enduml

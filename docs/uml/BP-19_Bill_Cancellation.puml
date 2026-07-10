@@ -1,0 +1,45 @@
+@startuml
+title BP-19 - Bill Cancellation
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Finance Officer|
+start
+:Open student obligation;
+:Request cancellation or deletion;
+
+|Platform|
+:Validate obligation belongs to tenant;
+:Check payment allocations;
+
+if (Payment allocation exists?) then (Yes)
+  :Reject cancellation or deletion;
+  :Return obligation already used error;
+  stop
+else (No)
+  :Set status to CANCELLED or soft delete record;
+endif
+
+:Record audit trail;
+
+|Parent Guardian|
+:Cancelled bill no longer appears as payable outstanding;
+stop
+
+note right
+Current endpoint:
+DELETE /student-obligations/{id}
+Recommended behavior:
+Do not delete obligations with payment history.
+end note
+@enduml

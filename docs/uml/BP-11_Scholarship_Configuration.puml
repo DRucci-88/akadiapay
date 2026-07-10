@@ -1,0 +1,47 @@
+@startuml
+title BP-11 - Scholarship Configuration
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Finance Officer|
+start
+:Create scholarship program;
+:Define eligibility scope;
+:Define discount amount or percentage;
+:Select applicable products or students;
+
+|Platform|
+:Validate tenant scope;
+:Validate scholarship value;
+:Validate applicable period;
+
+if (Scholarship valid?) then (Yes)
+  :Save scholarship configuration;
+else (No)
+  :Return validation error;
+  stop
+endif
+
+|Billing Engine|
+:Apply scholarship when generating obligation;
+:Reduce obligation amount according to rule;
+
+|Finance Officer|
+:Review scholarship impact report;
+stop
+
+note right
+Source of truth includes scholarship.
+Current MVP code does not yet implement a dedicated scholarship module.
+end note
+@enduml

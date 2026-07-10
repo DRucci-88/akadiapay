@@ -1,0 +1,47 @@
+@startuml
+title BP-26 - Cash Payment through Finance Officer
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Finance Officer|
+start
+:Receive cash payment from parent or student;
+:Search student outstanding bills;
+:Select obligations to settle;
+:Input received cash amount;
+
+|Platform|
+:Validate finance role;
+:Validate student belongs to tenant;
+:Validate amount is greater than zero;
+:Create PaymentOrder with CASH method;
+:Create payment allocations;
+:Update obligation outstanding balances;
+
+if (Order fully allocated?) then (Yes)
+  :Set PaymentOrder status to COMPLETED;
+  :Post ledger debit to Cash account;
+  :Post credit to revenue accounts;
+else (No)
+  :Keep PaymentOrder status as PENDING;
+endif
+
+|Finance Officer|
+:Print or show payment receipt;
+stop
+
+note right
+Current MVP supports CASH as PaymentOrder method.
+Ledger posting happens when order becomes COMPLETED.
+end note
+@enduml

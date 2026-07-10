@@ -1,0 +1,41 @@
+@startuml
+title BP-23 - Invoice Generation
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Platform|
+start
+:Receive valid checkout or payment order request;
+:Group selected bills for one school tenant;
+:Generate invoice number;
+:Attach selected obligations as invoice lines;
+:Calculate total payable amount;
+
+if (Invoice total valid?) then (Yes)
+  :Persist invoice or payment order representation;
+else (No)
+  :Return invoice calculation error;
+  stop
+endif
+
+|Parent Guardian|
+:Receive invoice summary;
+:Proceed to payment method selection;
+stop
+
+note right
+Source of truth includes Invoice.
+Current MVP represents this process through PaymentOrder.
+A dedicated Invoice module is future scope.
+end note
+@enduml

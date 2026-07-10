@@ -1,0 +1,46 @@
+@startuml
+title BP-12 - Discount Configuration
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Finance Officer|
+start
+:Create discount rule;
+:Select applicable product or billing period;
+:Define amount, percentage or early payment rule;
+
+|Platform|
+:Validate tenant scope;
+:Validate discount value;
+:Validate conflict with scholarship or existing rule;
+
+if (Discount valid?) then (Yes)
+  :Save discount configuration;
+else (No)
+  :Return validation error;
+  stop
+endif
+
+|Billing Engine|
+:Apply discount before obligation finalization;
+:Record discount as adjustment metadata;
+
+|Parent Guardian|
+:View reduced payable amount;
+stop
+
+note right
+Current MVP code does not yet implement a dedicated discount module.
+Use this as future business process documentation.
+end note
+@enduml

@@ -1,0 +1,50 @@
+@startuml
+title BP-15 - Single Student Bill Generation
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Finance Officer|
+start
+:Select one student;
+:Select payment product;
+:Input period, due date and optional amount;
+
+|Platform|
+:Read TenantID from JWT context;
+:Validate student belongs to tenant;
+:Validate payment product belongs to tenant;
+:Load product payment policy;
+:Determine original amount from request or product price;
+:Check duplicate obligation for student, product and period;
+
+if (Validation passed?) then (Yes)
+  :Create StudentObligation;
+  :Set OutstandingAmount equal to OriginalAmount;
+  :Set status to PENDING;
+else (No)
+  :Return validation error;
+  stop
+endif
+
+|Finance Officer|
+:Review created obligation;
+
+|Parent Guardian|
+:Obligation appears in outstanding bills;
+stop
+
+note right
+Current endpoint:
+POST /student-obligations
+end note
+@enduml

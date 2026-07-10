@@ -1,0 +1,49 @@
+@startuml
+title BP-18 - Bill Adjustment
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Finance Officer|
+start
+:Open existing student obligation;
+:Request due date or notes adjustment;
+
+|Platform|
+:Validate obligation belongs to tenant;
+:Check obligation status;
+:Check whether payment allocations exist;
+
+if (Financial amount change requested?) then (Yes)
+  if (Payment already exists?) then (Yes)
+    :Reject amount or product change;
+    :Return immutable financial field error;
+    stop
+  else (No)
+    :Allow controlled amount adjustment if supported;
+  endif
+else (No)
+  :Allow non financial update;
+endif
+
+:Update allowed fields;
+:Record audit trail;
+
+|Finance Officer|
+:Review adjusted obligation;
+stop
+
+note right
+Current MVP update focuses on due date and notes.
+Amount and payment product should not change after allocation exists.
+end note
+@enduml

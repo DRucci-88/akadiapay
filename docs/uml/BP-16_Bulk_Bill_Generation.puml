@@ -1,0 +1,53 @@
+@startuml
+title BP-16 - Bulk Bill Generation
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Finance Officer|
+start
+:Select payment product;
+:Select multiple students;
+:Input period and due date;
+
+|Platform|
+:Remove duplicate student IDs from request;
+:Validate student list is not empty;
+:Validate payment product belongs to tenant;
+:Begin transaction;
+
+|Billing Engine|
+:Validate each student belongs to tenant;
+:Check duplicate obligation for each student;
+
+if (Any validation failed?) then (Yes)
+  :Rollback transaction;
+  :Return validation error;
+  stop
+else (No)
+  :Create obligations for all selected students;
+endif
+
+|Platform|
+:Commit transaction;
+
+|Finance Officer|
+:Review bulk generation result;
+stop
+
+note right
+Current endpoint:
+POST /student-obligations/bulk
+Business rule:
+The whole batch should succeed or fail together.
+end note
+@enduml

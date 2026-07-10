@@ -1,0 +1,64 @@
+@startuml
+title BP-02 - User Login and Tenant Workspace Selection
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|User|
+start
+:Open login page;
+:Submit email and password;
+
+|Platform|
+:Find user by email;
+if (User exists?) then (Yes)
+  :Verify password hash;
+else (No)
+  :Return invalid credential error;
+  stop
+endif
+
+if (Password valid?) then (Yes)
+  :Load active UserTenantRole records;
+else (No)
+  :Return invalid credential error;
+  stop
+endif
+
+if (Access records found?) then (Yes)
+  :Build one login response per tenant role;
+else (No)
+  :Return access not configured error;
+  stop
+endif
+
+if (Role is STUDENT?) then (Yes)
+  :Resolve StudentID for token claim;
+else (No)
+  :Leave StudentID empty;
+endif
+
+:Generate JWT containing UserID, TenantID, RoleCode and optional StudentID;
+:Return available workspaces with tokens;
+
+|User|
+:Choose tenant workspace and role;
+:Use selected token for protected APIs;
+stop
+
+note right
+Technical rules:
+- TenantID must come from UserTenantRole.
+- Client must not choose arbitrary TenantID.
+- Each token represents exactly one tenant role context.
+end note
+@enduml

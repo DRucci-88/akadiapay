@@ -1,0 +1,52 @@
+@startuml
+title BP-13 - Penalty and Grace Period Configuration
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Finance Officer|
+start
+:Create late payment policy;
+:Define due date basis;
+:Define grace period;
+:Define penalty amount or percentage;
+
+|Payment Rule Engine|
+:Validate grace period is not negative;
+:Validate penalty value;
+:Validate applicable products;
+
+if (Penalty rule valid?) then (Yes)
+  :Save penalty and grace period policy;
+else (No)
+  :Return validation error;
+  stop
+endif
+
+|Billing Engine|
+:Check overdue obligations;
+if (Grace period exceeded?) then (Yes)
+  :Apply penalty rule;
+  :Update outstanding obligation or create adjustment;
+else (No)
+  :Do not apply penalty yet;
+endif
+
+|Notification Engine|
+:Send overdue reminder if configured;
+stop
+
+note right
+Current MVP has due dates and outstanding status.
+Dedicated penalty calculation is future scope.
+end note
+@enduml

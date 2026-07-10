@@ -1,0 +1,49 @@
+@startuml
+title BP-08 - Payment Product Configuration
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Finance Officer|
+start
+:Open payment product configuration;
+:Choose payment policy;
+:Input product code, name, price and status;
+:Input revenue account code and name;
+
+|Platform|
+:Read TenantID from JWT context;
+:Validate payment policy belongs to tenant;
+:Validate product code unique within tenant;
+:Validate price is greater than zero;
+:Validate revenue account fields if supplied;
+
+if (Validation passed?) then (Yes)
+  :Create or update PaymentProduct;
+else (No)
+  :Return validation error;
+  stop
+endif
+
+|Finance Officer|
+:Product becomes available for bill generation;
+stop
+
+note right
+Current endpoints:
+- POST /payment-products
+- GET /payment-products
+- GET /payment-products/{id}
+- PUT /payment-products/{id}
+Legacy singular routes are also available.
+end note
+@enduml

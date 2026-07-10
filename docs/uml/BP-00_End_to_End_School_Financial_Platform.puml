@@ -1,0 +1,62 @@
+@startuml
+title BP-00 - End to End School Financial Platform
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Super Admin|
+start
+:Onboard school tenant;
+:Create initial school administrator;
+
+|School Administrator|
+:Configure school workspace;
+:Assign finance and academic users;
+
+|Academic Staff|
+:Maintain students and parent relationships;
+
+|Finance Officer|
+:Configure payment policies;
+:Configure payment products;
+:Generate student obligations;
+
+|Parent Guardian|
+:Login and select school workspace;
+:View children outstanding bills;
+:Select bills to pay;
+
+|Platform|
+:Create payment order or invoice;
+:Validate payment rules;
+:Record payment allocation;
+:Update student obligation balance;
+
+if (Payment completed?) then (Yes)
+  :Post financial ledger entries;
+  :Prepare reporting and audit trail;
+else (No)
+  :Keep payment order pending or cancelled;
+endif
+
+|Finance Officer|
+:Review collection, outstanding and ledger reports;
+stop
+
+note right
+Scope summary:
+- Multi tenant school financial platform.
+- Student Obligation is the center of billing.
+- Payment reduces obligations.
+- Ledger records auditable financial evidence.
+end note
+@enduml

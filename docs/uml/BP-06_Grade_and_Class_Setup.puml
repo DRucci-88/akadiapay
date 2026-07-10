@@ -1,0 +1,43 @@
+@startuml
+title BP-06 - Grade and Class Setup
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Academic Staff|
+start
+:Create grade level;
+:Create class within grade;
+:Assign homeroom or metadata if available;
+
+|Platform|
+:Validate tenant scope;
+:Validate grade code uniqueness;
+:Validate class code uniqueness within grade;
+
+if (Configuration valid?) then (Yes)
+  :Save grade and class configuration;
+else (No)
+  :Return validation error;
+  stop
+endif
+
+|Academic Staff|
+:Use class data for student registration and bulk billing selection;
+stop
+
+note right
+Future billing usage:
+Bulk bill generation can target a class, grade,
+or academic period once academic modules exist.
+end note
+@enduml

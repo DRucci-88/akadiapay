@@ -1,0 +1,45 @@
+@startuml
+title BP-05 - Academic Year and Semester Setup
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|School Administrator|
+start
+:Create academic year;
+:Define start date and end date;
+:Create semester records;
+
+|Platform|
+:Validate dates do not overlap active periods;
+:Validate semester belongs to academic year;
+
+if (Date configuration valid?) then (Yes)
+  :Save academic period configuration;
+else (No)
+  :Return validation error;
+  stop
+endif
+
+|Academic Staff|
+:Use academic year and semester for student grouping;
+
+|Finance Officer|
+:Use period as billing reference;
+stop
+
+note right
+Current code status:
+Academic period is part of the source of truth scope.
+It is not yet a dedicated implemented module in current MVP code.
+end note
+@enduml

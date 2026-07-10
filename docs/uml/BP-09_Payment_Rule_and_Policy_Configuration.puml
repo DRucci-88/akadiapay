@@ -1,0 +1,56 @@
+@startuml
+title BP-09 - Payment Rule and Policy Configuration
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Finance Officer|
+start
+:Open payment policy configuration;
+:Input code, name and description;
+:Configure partial payment flag;
+:Configure minimum amount and minimum percentage;
+:Configure overpayment and auto close rules;
+
+|Platform|
+:Read TenantID from JWT context;
+:Normalize policy fields;
+
+if (Partial payment allowed?) then (Yes)
+  :Validate minimum amount or minimum percentage is configured;
+else (No)
+  :Set minimum amount to zero;
+  :Set minimum percentage to zero;
+endif
+
+:Validate percentage range between zero and one hundred;
+:Validate code uniqueness within tenant;
+
+if (Validation passed?) then (Yes)
+  :Create or update PaymentPolicy;
+else (No)
+  :Return validation error;
+  stop
+endif
+
+|Finance Officer|
+:Use policy when configuring PaymentProduct;
+stop
+
+note right
+Current endpoints:
+- POST /payment-policies
+- GET /payment-policies
+- GET /payment-policies/{id}
+- PUT /payment-policies/{id}
+end note
+@enduml

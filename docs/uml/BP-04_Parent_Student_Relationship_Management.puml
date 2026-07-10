@@ -1,0 +1,51 @@
+@startuml
+title BP-04 - Parent Student Relationship Management
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Academic Staff|
+start
+:Search parent account;
+if (Parent account exists?) then (Yes)
+  :Select parent account;
+else (No)
+  :Create parent user account;
+  :Assign PARENT role for tenant;
+endif
+
+:Search student record;
+
+|Platform|
+:Validate parent user belongs to tenant;
+:Validate student belongs to tenant;
+:Check existing parent student relationship;
+
+if (Relationship already exists?) then (Yes)
+  :Return existing relationship;
+else (No)
+  :Create ParentStudent record;
+  :Set relationship type and primary flag;
+endif
+
+|Parent Guardian|
+:Login to parent workspace;
+:View linked children;
+stop
+
+note right
+Business rules:
+- One parent can have many students.
+- One student can have many guardians.
+- Parent can only view bills for linked students.
+end note
+@enduml

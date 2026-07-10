@@ -1,0 +1,57 @@
+@startuml
+title BP-03 - User Role and Tenant Access Assignment
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Super Admin|
+start
+:Select tenant;
+:Select or create user account;
+:Select role to assign;
+
+|Platform|
+:Validate tenant exists;
+:Validate user exists;
+:Validate role exists;
+:Check duplicate UserTenantRole;
+
+if (Assignment already exists?) then (Yes)
+  :Return duplicate assignment error;
+  stop
+else (No)
+  :Create UserTenantRole;
+endif
+
+if (This is default workspace?) then (Yes)
+  :Unset other default access for user if needed;
+  :Mark assignment as default;
+else (No)
+  :Keep assignment as non default;
+endif
+
+|Super Admin|
+:Confirm access assignment;
+
+|User|
+:Login and receives new tenant role option;
+stop
+
+note right
+Roles in current project:
+- SUPER_ADMIN
+- SCHOOL_ADMIN
+- TREASURER
+- PARENT
+- STUDENT
+end note
+@enduml

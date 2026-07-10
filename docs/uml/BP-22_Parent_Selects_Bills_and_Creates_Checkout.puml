@@ -1,0 +1,46 @@
+@startuml
+title BP-22 - Parent Selects Bills and Creates Checkout
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Parent Guardian|
+start
+:View outstanding bills;
+:Select one or more obligations to pay;
+:Choose payment method;
+:Submit checkout request;
+
+|Platform|
+:Validate selected obligations belong to same tenant;
+:Validate selected obligations belong to same student for current MVP;
+:Validate parent or student access;
+:Calculate total amount server side;
+:Validate payment amount does not exceed outstanding;
+
+if (Validation passed?) then (Yes)
+  :Create PaymentOrder with status PENDING;
+else (No)
+  :Return checkout validation error;
+  stop
+endif
+
+|Parent Guardian|
+:Receive payment order details;
+stop
+
+note right
+Current MVP endpoint:
+POST /payment-orders
+Current model uses PaymentOrder rather than separate Checkout entity.
+end note
+@enduml

@@ -1,0 +1,45 @@
+@startuml
+title BP-10 - Payment Plan and Installment Configuration
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Finance Officer|
+start
+:Select payment product;
+:Choose installment capable policy;
+:Define installment strategy;
+:Define minimum payment rule;
+:Define due date behaviour;
+
+|Payment Rule Engine|
+:Validate installment rules;
+:Validate minimum payment constraints;
+
+if (Installment configuration valid?) then (Yes)
+  :Save payment plan configuration;
+else (No)
+  :Return rule validation error;
+  stop
+endif
+
+|Finance Officer|
+:Use plan during bill generation and payment allocation;
+stop
+
+note right
+Current MVP representation:
+Installment is represented through PaymentPolicy
+with AllowPartial, MinimumAmount and MinimumPercentage.
+Dedicated installment schedule is future scope.
+end note
+@enduml

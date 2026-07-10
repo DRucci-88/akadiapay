@@ -1,0 +1,45 @@
+@startuml
+title BP-20 - Due Date and Overdue Processing
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Billing Engine|
+start
+:Run scheduled due date check;
+:Find obligations with outstanding amount greater than zero;
+:Compare due date with current date;
+
+if (Obligation overdue?) then (Yes)
+  :Mark as overdue for reporting;
+  if (Penalty rule configured?) then (Yes)
+    :Apply penalty after grace period;
+  else (No)
+    :Keep amount unchanged;
+  endif
+  :Prepare reminder notification;
+else (No)
+  :Keep obligation as normal outstanding;
+endif
+
+|Notification Engine|
+:Send due date or overdue reminder;
+
+|Finance Officer|
+:View overdue report;
+stop
+
+note right
+Current MVP has due date filters and outstanding bills.
+Overdue status, penalty and scheduled notifications are future scope.
+end note
+@enduml

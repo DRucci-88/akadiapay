@@ -1,0 +1,48 @@
+@startuml
+title BP-17 - Bill Assignment to Students
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Finance Officer|
+start
+:Choose bill assignment criteria;
+if (Assignment is manual?) then (Manual)
+  :Select individual students;
+else (Bulk)
+  :Select class, grade or student group;
+endif
+
+:Select payment product and billing period;
+
+|Billing Engine|
+:Resolve target student list;
+:Validate product and policy;
+:Create obligations or skip duplicates according to rule;
+
+if (Assignment completed?) then (Yes)
+  :Store created obligation records;
+  :Prepare notification event;
+else (No)
+  :Return assignment error;
+  stop
+endif
+
+|Parent Guardian|
+:Receives new bill visibility;
+stop
+
+note right
+Current MVP supports assignment through single
+and bulk StudentObligation creation endpoints.
+end note
+@enduml

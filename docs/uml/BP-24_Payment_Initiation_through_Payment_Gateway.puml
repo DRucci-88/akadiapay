@@ -1,0 +1,46 @@
+@startuml
+title BP-24 - Payment Initiation through Payment Gateway
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Parent Guardian|
+start
+:Select digital payment method;
+:Confirm payment order;
+
+|Platform|
+:Validate order status is PENDING;
+:Validate payment method is allowed;
+:Prepare payment gateway request;
+
+|Payment Gateway|
+:Create payment instruction;
+if (Gateway accepts request?) then (Yes)
+  :Return QRIS, virtual account or redirect data;
+else (No)
+  :Return gateway error;
+  stop
+endif
+
+|Platform|
+:Save reference number and payment instruction;
+
+|Parent Guardian|
+:Complete payment outside or inside gateway channel;
+stop
+
+note right
+Current MVP stores payment method and reference number.
+Actual external gateway integration is future scope.
+end note
+@enduml

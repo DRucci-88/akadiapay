@@ -1,0 +1,55 @@
+@startuml
+title BP-28 - Notification Reconciliation and Financial Reporting
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Platform|
+start
+:Collect payment orders, allocations, obligations and ledger entries;
+:Prepare financial summaries;
+
+|Notification Engine|
+if (Notification event exists?) then (Yes)
+  :Send payment or billing notification;
+else (No)
+  :Skip notification;
+endif
+
+|Finance Officer|
+:Open reporting dashboard;
+:Filter by tenant, date, product or payment method;
+
+|Platform|
+:Calculate outstanding bill report;
+:Calculate collection report;
+:Calculate revenue report;
+:Calculate payment method report;
+:Calculate settlement or ledger report;
+
+|Finance Officer|
+:Review and reconcile report totals;
+
+if (Mismatch found?) then (Yes)
+  :Investigate payment order and ledger details;
+  :Export or escalate reconciliation issue;
+else (No)
+  :Confirm report is consistent;
+endif
+
+stop
+
+note right
+Current MVP has ledger listing and payment history basis.
+Notification engine and full dashboard are future scope.
+end note
+@enduml

@@ -1,0 +1,43 @@
+@startuml
+title BP-07 - Student Registration and School Assignment
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Academic Staff|
+start
+:Input student identity and academic data;
+:Assign student to tenant;
+:Optionally link student to login user;
+
+|Platform|
+:Validate tenant exists;
+:Validate NISN or student number uniqueness;
+:Validate optional user account;
+
+if (Student data valid?) then (Yes)
+  :Create student record;
+else (No)
+  :Return validation error;
+  stop
+endif
+
+if (Parent guardian available?) then (Yes)
+  :Create or update ParentStudent relationship;
+else (No)
+  :Leave guardian relationship empty;
+endif
+
+|Finance Officer|
+:Student becomes selectable for obligation generation;
+stop
+@enduml

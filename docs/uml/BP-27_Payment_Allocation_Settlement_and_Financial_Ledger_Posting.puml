@@ -1,0 +1,76 @@
+@startuml
+title BP-27 - Payment Allocation Settlement and Financial Ledger Posting
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Parent Guardian|
+start
+:Submit allocation request for payment order;
+
+|Platform|
+:Validate payment order belongs to tenant;
+:Validate order status is PENDING;
+:Validate allocation list is not empty;
+:Reject duplicate obligation IDs;
+:Begin transaction;
+:Lock PaymentOrder row;
+:Lock StudentObligation rows;
+:Reload existing allocations;
+
+if (Total allocation exceeds order amount?) then (Yes)
+  :Rollback transaction;
+  :Return allocation total error;
+  stop
+else (No)
+  :Continue validation;
+endif
+
+|Payment Rule Engine|
+:Load payment product and payment policy;
+:Validate allocation against AllowPartial;
+:Validate minimum amount and minimum percentage;
+:Validate overpayment rule;
+
+if (Payment rules passed?) then (Yes)
+  |Platform|
+  :Insert PaymentAllocation rows;
+  :Update obligation outstanding amounts;
+  :Update obligation status;
+else (No)
+  |Platform|
+  :Rollback transaction;
+  :Return rule validation error;
+  stop
+endif
+
+if (Order fully allocated?) then (Yes)
+  :Set PaymentOrder status to COMPLETED;
+  :Build balanced ledger entries;
+  :Insert LedgerEntry rows;
+  :Set LedgerPostedAt;
+else (No)
+  :Keep PaymentOrder status PENDING;
+endif
+
+:Commit transaction;
+
+|Parent Guardian|
+:Receive allocation and payment result;
+stop
+
+note right
+Current endpoint:
+POST /payment-orders/{id}/allocate
+This is the core financial transaction boundary.
+end note
+@enduml

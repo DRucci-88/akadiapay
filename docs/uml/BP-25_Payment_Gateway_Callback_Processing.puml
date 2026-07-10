@@ -1,0 +1,48 @@
+@startuml
+title BP-25 - Payment Gateway Callback Processing
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Payment Gateway|
+start
+:Send payment callback;
+
+|Platform|
+:Verify callback signature;
+:Find payment order by reference number;
+:Check idempotency key or current status;
+
+if (Callback already processed?) then (Yes)
+  :Return success without duplicate changes;
+  stop
+else (No)
+  :Continue processing;
+endif
+
+if (Payment successful?) then (Yes)
+  :Mark payment order as COMPLETED;
+  :Allocate payment to obligations if not already allocated;
+  :Post ledger entries;
+else (No)
+  :Mark payment as FAILED or keep pending according to provider status;
+endif
+
+:Record callback audit trail;
+:Prepare notification event;
+stop
+
+note right
+Callback processing is future gateway scope.
+Current MVP uses allocation flow to complete payment orders.
+end note
+@enduml

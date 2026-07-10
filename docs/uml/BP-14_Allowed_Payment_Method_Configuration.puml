@@ -1,0 +1,46 @@
+@startuml
+title BP-14 - Allowed Payment Method Configuration
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|School Administrator|
+start
+:Open school payment method settings;
+:Select allowed methods;
+:Configure method specific information;
+
+|Platform|
+:Validate tenant scope;
+:Validate payment method support;
+:Validate required provider credentials if needed;
+
+if (Configuration valid?) then (Yes)
+  :Save allowed payment method settings;
+else (No)
+  :Return validation error;
+  stop
+endif
+
+|Parent Guardian|
+:See only methods allowed by the school;
+
+|Finance Officer|
+:Use cash method if manual collection is allowed;
+stop
+
+note right
+Current PaymentOrder supports:
+CASH, BANK_TRANSFER, VIRTUAL_ACCOUNT, QRIS, CREDIT_CARD.
+External provider configuration is future scope.
+end note
+@enduml

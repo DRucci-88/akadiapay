@@ -1,0 +1,45 @@
+@startuml
+title BP-21 - Parent Views Multi Student Outstanding Bills
+
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  DiamondBackgroundColor White
+  DiamondBorderColor Black
+}
+skinparam note {
+  BackgroundColor White
+  BorderColor Black
+}
+
+|Parent Guardian|
+start
+:Login to parent workspace;
+:Select school tenant if multiple;
+:Open children or outstanding bill page;
+
+|Platform|
+:Read UserID, TenantID and RoleCode from JWT;
+:Load students linked to parent in tenant;
+
+if (Student requested explicitly?) then (Yes)
+  :Validate parent owns requested student;
+else (No)
+  :Use all linked students in tenant;
+endif
+
+:Find obligations with outstanding amount greater than zero;
+:Calculate paid amount and remaining amount;
+:Return outstanding bill list;
+
+|Parent Guardian|
+:Review bills for each child;
+stop
+
+note right
+Current endpoint:
+GET /students/{studentId}/outstanding
+Tenant and parent ownership validation are mandatory.
+end note
+@enduml
