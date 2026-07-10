@@ -53,6 +53,7 @@ var (
 	ErrPaymentOrderNotFound            = errors.New("Payment Order not found")
 	ErrPaymentOrderStatusInvalid       = errors.New("Payment Order status invalid")
 	ErrPaymentOrderAllocated           = errors.New("Payment Order has payment allocations")
+	ErrPaymentAllocationNotFound       = errors.New("Payment Allocation not found")
 
 	// Payment Allocation
 	ErrPaymentAllocationRequired                 = errors.New("Payment Allocation required")
@@ -60,4 +61,13 @@ var (
 	ErrPaymentAllocationAmountExceedsOutstanding = errors.New("Payment Allocation exceeds outstanding amount")
 	ErrPaymentAllocationTotalExceedsOrder        = errors.New("Payment Allocation total exceeds payment order amount")
 	ErrPaymentAllocationDuplicateObligation      = errors.New("Payment Allocation duplicate obligation")
+
+	// Ledger
+	ErrLedgerAlreadyPosted              = errors.New("Ledger already posted")
+	ErrLedgerEntryNotFound              = errors.New("Ledger Entry not found")
+	ErrLedgerUnbalanced                 = errors.New("Ledger entries are not balanced")
+	ErrLedgerUnbalancedSource           = errors.New("Payment Allocation does not match payment total")
+	ErrLedgerDebitAccountNotConfigured  = errors.New("Debit account is not configured")
+	ErrLedgerCreditAccountNotConfigured = errors.New("Credit account is not configured")
+	ErrPostedPaymentCannotBeCancelled   = errors.New("Posted payment cannot be cancelled")
 )

@@ -159,6 +159,11 @@ func (s *paymentAllocationServiceImpl) Allocate(
 		if _, err := repo.PaymentOrder().UpdateStatus(ctx, paymentOrderID, orderStatus); err != nil {
 			return err
 		}
+		if orderStatus == model.PaymentOrderStatusCompleted {
+			if err := postLedgerEntriesForPaymentOrder(ctx, repo, paymentOrderID); err != nil {
+				return err
+			}
+		}
 
 		return nil
 	}); err != nil {

@@ -36,13 +36,15 @@ func IntializedApplication() *Application {
 	paymentOrderHandler := handler.NewPaymentOrderHandler(paymentOrderService)
 	paymentAllocationService := service2.NewPaymentAllocationService(repositoryManagerPayment, paymentOrderService)
 	paymentAllocationHandler := handler.NewPaymentAllocationHandler(paymentAllocationService)
+	ledgerEntryService := service2.NewLedgerEntryService(repositoryManagerPayment, paymentOrderService)
+	ledgerEntryHandler := handler.NewLedgerEntryHandler(ledgerEntryService)
 	paymentProductService := service2.NewPaymentProductService(repositoryManagerPayment)
 	paymentProductHandler := handler.NewPaymentProductHandler(paymentProductService)
 	paymentPolicyService := service2.NewPaymentPolicyService(repositoryManagerPayment)
 	paymentPolicyHandler := handler.NewPaymentPolicyHandler(paymentPolicyService)
 	studentObligationService := service2.NewStudentObligationService(repositoryManagerPayment, studentService, paymentProductService, parentStudentService)
 	studentObligationHandler := handler.NewStudentObligationHandler(studentObligationService)
-	engine := NewRouter(middlewareManager, authHandler, paymentProductHandler, paymentPolicyHandler, studentObligationHandler, paymentOrderHandler, paymentAllocationHandler)
+	engine := NewRouter(middlewareManager, authHandler, paymentProductHandler, paymentPolicyHandler, studentObligationHandler, paymentOrderHandler, paymentAllocationHandler, ledgerEntryHandler)
 	application := NewApplication(engine, appConfigProvider)
 	return application
 }

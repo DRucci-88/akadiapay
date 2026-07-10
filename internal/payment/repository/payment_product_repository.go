@@ -102,6 +102,22 @@ func (r *paymentProductRepositoryImpl) FindByID(
 	return &paymentProduct, err
 }
 
+func (r *paymentProductRepositoryImpl) FindByIDsIncludingDeleted(
+	ctx context.Context,
+	ids []uuid.UUID,
+) ([]model.PaymentProduct, error) {
+	items := make([]model.PaymentProduct, 0)
+	if err := r.db.
+		WithContext(ctx).
+		Unscoped().
+		Where("id IN ?", ids).
+		Find(&items).Error; err != nil {
+		return nil, err
+	}
+
+	return items, nil
+}
+
 func (r *paymentProductRepositoryImpl) Create(
 	ctx context.Context,
 	paymentProduct *model.PaymentProduct,

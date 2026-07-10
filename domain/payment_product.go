@@ -64,6 +64,10 @@ type PaymentProductRepository interface {
 		id uuid.UUID,
 		preloads ...model.PaymentProductPreload,
 	) (*model.PaymentProduct, error)
+	FindByIDsIncludingDeleted(
+		ctx context.Context,
+		ids []uuid.UUID,
+	) ([]model.PaymentProduct, error)
 	Create(
 		ctx context.Context,
 		paymentProduct *model.PaymentProduct,

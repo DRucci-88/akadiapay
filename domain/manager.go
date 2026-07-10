@@ -25,6 +25,7 @@ type RepositoryManagerPayment interface {
 		ctx context.Context,
 		fn func(repo RepositoryManagerPayment) error,
 	) error
+	LedgerEntry() LedgerEntryRepository
 	PaymentPolicy() PaymentPolicyRepository
 	PaymentProduct() PaymentProductRepository
 	StudentObligation() StudentObligationRepository

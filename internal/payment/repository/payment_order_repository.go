@@ -8,9 +8,11 @@ import (
 	"akadia/model/generated"
 	"context"
 	"errors"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type paymentOrderRepositoryImpl struct {
@@ -145,6 +147,25 @@ func (r *paymentOrderRepositoryImpl) FirstByID(
 	return &paymentOrder, nil
 }
 
+func (r *paymentOrderRepositoryImpl) LockByID(
+	ctx context.Context,
+	id uuid.UUID,
+) (*model.PaymentOrder, error) {
+	var paymentOrder model.PaymentOrder
+	if err := r.db.
+		WithContext(ctx).
+		Clauses(clause.Locking{Strength: "UPDATE"}).
+		Where("id = ?", id).
+		First(&paymentOrder).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, shared.ErrPaymentOrderNotFound
+		}
+		return nil, err
+	}
+
+	return &paymentOrder, nil
+}
+
 func (r *paymentOrderRepositoryImpl) UpdateStatus(
 	ctx context.Context,
 	id uuid.UUID,
@@ -156,6 +177,25 @@ func (r *paymentOrderRepositoryImpl) UpdateStatus(
 		Omit("id", "created_at").
 		Updates(ctx, map[string]any{
 			generated.PaymentOrder.Status.Column().Name: status,
+		})
+	if rows == 0 {
+		return rows, shared.ErrPaymentOrderNotFound
+	}
+
+	return rows, err
+}
+
+func (r *paymentOrderRepositoryImpl) MarkLedgerPosted(
+	ctx context.Context,
+	id uuid.UUID,
+	ledgerPostedAt *time.Time,
+) (int, error) {
+	rows, err := gorm.G[map[string]any](r.db).
+		Where(generated.BaseModel.ID.Eq(id)).
+		Select("*").
+		Omit("id", "created_at").
+		Updates(ctx, map[string]any{
+			generated.PaymentOrder.LedgerPostedAt.Column().Name: ledgerPostedAt,
 		})
 	if rows == 0 {
 		return rows, shared.ErrPaymentOrderNotFound

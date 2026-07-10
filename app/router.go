@@ -16,6 +16,7 @@ func NewRouter(
 	studentObligation domain.StudentObligationHandler,
 	paymentOrder domain.PaymentOrderHandler,
 	paymentAllocation domain.PaymentAllocationHandler,
+	ledgerEntry domain.LedgerEntryHandler,
 ) *gin.Engine {
 	r := gin.Default()
 
@@ -57,6 +58,11 @@ func NewRouter(
 	paymentOrderApi.POST("/:id/cancel", paymentOrder.Cancel)
 	paymentOrderApi.POST("/:id/allocate", paymentAllocation.Allocate)
 	paymentOrderApi.GET("/:id/allocations", paymentAllocation.FindByPaymentOrderID)
+	paymentOrderApi.GET("/:id/ledger", ledgerEntry.FindByPaymentOrderID)
+	paymentOrderApi.POST("/:id/post-ledger", ledgerEntry.PostPayment)
+
+	ledgerEntryApi := r.Group("/ledger-entries", m.JWT)
+	ledgerEntryApi.GET("", ledgerEntry.FindAll)
 
 	return r
 }

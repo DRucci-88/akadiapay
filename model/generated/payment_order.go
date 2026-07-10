@@ -19,6 +19,7 @@ var PaymentOrder = struct {
 	Status             field.String
 	PaymentMethod      field.String
 	ReferenceNumber    field.String
+	LedgerPostedAt     field.Time
 	Notes              field.String
 	PaymentAllocations field.Slice[model.PaymentAllocation]
 }{
@@ -31,6 +32,7 @@ var PaymentOrder = struct {
 	Status:             field.String{}.WithColumn("status"),
 	PaymentMethod:      field.String{}.WithColumn("payment_method"),
 	ReferenceNumber:    field.String{}.WithColumn("reference_number"),
+	LedgerPostedAt:     field.Time{}.WithColumn("ledger_posted_at"),
 	Notes:              field.String{}.WithColumn("notes"),
 	PaymentAllocations: field.Slice[model.PaymentAllocation]{}.WithName("PaymentAllocations"),
 }

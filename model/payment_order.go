@@ -23,6 +23,7 @@ type PaymentOrder struct {
 	Status          PaymentOrderStatus        `gorm:"type:varchar(20);default:PENDING;not null"`
 	PaymentMethod   PaymentOrderPaymentMethod `gorm:"type:varchar(30);not null"`
 	ReferenceNumber *string                   `gorm:"type:varchar(100)"`
+	LedgerPostedAt  *time.Time                `gorm:"index"`
 	Notes           string                    `gorm:"type:text"`
 
 	BaseModel

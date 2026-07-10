@@ -63,10 +63,19 @@ type PaymentOrderRepository interface {
 		ctx context.Context,
 		id uuid.UUID,
 	) (*model.PaymentOrder, error)
+	LockByID(
+		ctx context.Context,
+		id uuid.UUID,
+	) (*model.PaymentOrder, error)
 	UpdateStatus(
 		ctx context.Context,
 		id uuid.UUID,
 		status model.PaymentOrderStatus,
+	) (int, error)
+	MarkLedgerPosted(
+		ctx context.Context,
+		id uuid.UUID,
+		ledgerPostedAt *time.Time,
 	) (int, error)
 }
 
@@ -102,6 +111,7 @@ type PaymentOrderResponse struct {
 	Status          model.PaymentOrderStatus        `json:"status"`
 	PaymentMethod   model.PaymentOrderPaymentMethod `json:"payment_method"`
 	ReferenceNumber *string                         `json:"reference_number,omitempty"`
+	LedgerPostedAt  *time.Time                      `json:"ledger_posted_at,omitempty"`
 	Notes           string                          `json:"notes"`
 }
 
@@ -117,6 +127,7 @@ func NewPaymentOrderResponse(model *model.PaymentOrder) *PaymentOrderResponse {
 		Status:          model.Status,
 		PaymentMethod:   model.PaymentMethod,
 		ReferenceNumber: model.ReferenceNumber,
+		LedgerPostedAt:  model.LedgerPostedAt,
 		Notes:           model.Notes,
 	}
 }

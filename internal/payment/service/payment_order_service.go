@@ -126,6 +126,9 @@ func (s *paymentOrderServiceImpl) Cancel(
 	if err != nil {
 		return nil, err
 	}
+	if paymentOrder.LedgerPostedAt != nil {
+		return nil, shared.ErrPostedPaymentCannotBeCancelled
+	}
 	if paymentOrder.Status != model.PaymentOrderStatusPending {
 		return nil, shared.ErrPaymentOrderStatusInvalid
 	}
