@@ -21,48 +21,48 @@ variables:
   - secret: true
     name: token_student_smahb
   - name: payment_policy_id
-    value: 
+    value: ""
   - name: payment_policy_id_full
-    value: 
+    value: ""
   - name: payment_policy_id_partial
-    value: 
+    value: ""
   - name: payment_policy_id_installment
-    value: 
+    value: ""
   - name: payment_product_id
-    value: 
+    value: ""
   - name: payment_product_id_spp_aug
-    value: 
+    value: ""
   - name: payment_product_id_study_tour
-    value: 
+    value: ""
   - name: payment_product_id_building
-    value: 
+    value: ""
   - name: payment_product_id_book
-    value: 
+    value: ""
   - name: student_id_kevin
-    value: 
+    value: b272169d-8caa-4b69-8f44-6652066cf980
   - name: student_id_rucco
-    value: 
+    value: ""
   - name: student_id_gilis
-    value: 
+    value: ""
   - name: student_obligation_id
-    value: 
+    value: ""
   - name: student_obligation_id_kevin_spp_aug
-    value: 
+    value: ""
   - name: student_obligation_id_kevin_study_tour
-    value: 
+    value: ""
   - name: student_obligation_id_rucco_building
-    value: 
+    value: ""
   - name: student_obligation_id_gilis_study_tour
-    value: 
+    value: ""
   - name: payment_order_id
-    value: 
+    value: ""
   - name: payment_order_id_pending
-    value: 
+    value: ""
   - name: payment_order_id_completed
-    value: 
+    value: ""
   - name: payment_order_id_new
-    value: 
+    value: ""
   - name: payment_order_id_allocatable
-    value: 
+    value: 0b5fa90e-6192-48a6-bd2e-603380249e1f
   - name: ledger_payment_order_id
-    value: 
+    value: ""

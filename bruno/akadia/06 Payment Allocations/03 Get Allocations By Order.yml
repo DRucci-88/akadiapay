@@ -12,6 +12,11 @@ http:
       type: path
   auth: inherit
 
+runtime:
+  variables:
+    - name: payment_order_id
+      value: 53055d12-abd9-49be-a037-e83dfff08176
+
 settings:
   encodeUrl: true
   timeout: 0
