@@ -13,6 +13,7 @@ type RepositoryManagerMaster interface {
 		fn func(repo RepositoryManagerMaster) error,
 	) error
 	Student() StudentRepository
+	ParentStudent() ParentStudentRepository
 	Tenant() TenantRepository
 	User() UserRepository
 	UserTenantRole() UserTenantRoleRepository
@@ -27,4 +28,6 @@ type RepositoryManagerPayment interface {
 	PaymentPolicy() PaymentPolicyRepository
 	PaymentProduct() PaymentProductRepository
 	StudentObligation() StudentObligationRepository
+	PaymentAllocation() PaymentAllocationRepository
+	PaymentOrder() PaymentOrderRepository
 }

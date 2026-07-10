@@ -42,4 +42,22 @@ var (
 	ErrStudentObligationAlreadyExists   = errors.New("Student Obligation already exists")
 	ErrStudentObligationAmountInvalid   = errors.New("Student Obligation amount invalid")
 	ErrStudentObligationDueDateRequired = errors.New("Student Obligation due date required")
+	ErrStudentObligationStudentIDsEmpty = errors.New("Student Obligation student IDs required")
+	ErrStudentObligationAllocated       = errors.New("Student Obligation has payment allocations")
+
+	// Payment Order
+	ErrPaymentOrderAmountInvalid       = errors.New("Payment Order amount invalid")
+	ErrPaymentOrderMethodInvalid       = errors.New("Payment Order payment method invalid")
+	ErrPaymentOrderDateRequired        = errors.New("Payment Order date required")
+	ErrPaymentOrderOutstandingRequired = errors.New("Outstanding bill required")
+	ErrPaymentOrderNotFound            = errors.New("Payment Order not found")
+	ErrPaymentOrderStatusInvalid       = errors.New("Payment Order status invalid")
+	ErrPaymentOrderAllocated           = errors.New("Payment Order has payment allocations")
+
+	// Payment Allocation
+	ErrPaymentAllocationRequired                 = errors.New("Payment Allocation required")
+	ErrPaymentAllocationAmountInvalid            = errors.New("Payment Allocation amount invalid")
+	ErrPaymentAllocationAmountExceedsOutstanding = errors.New("Payment Allocation exceeds outstanding amount")
+	ErrPaymentAllocationTotalExceedsOrder        = errors.New("Payment Allocation total exceeds payment order amount")
+	ErrPaymentAllocationDuplicateObligation      = errors.New("Payment Allocation duplicate obligation")
 )

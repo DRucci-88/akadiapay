@@ -14,7 +14,12 @@ import (
 
 type StudentObligationHandler interface {
 	Create(c *gin.Context)
+	CreateBulk(c *gin.Context)
 	FindAll(c *gin.Context)
+	FindByID(c *gin.Context)
+	Update(c *gin.Context)
+	Delete(c *gin.Context)
+	OutstandingByStudentID(c *gin.Context)
 }
 
 type StudentObligationService interface {
@@ -29,12 +34,42 @@ type StudentObligationService interface {
 		filter *StudentObligationFilter,
 		authContext *security.AuthContext,
 	) (*shared.Page[StudentObligationResponse], error)
+	CreateBulk(
+		ctx context.Context,
+		authContext *security.AuthContext,
+		req *StudentObligationBulkCreate,
+	) ([]model.StudentObligation, error)
+	FindOutstandingByStudentID(
+		ctx context.Context,
+		authContext *security.AuthContext,
+		studentID uuid.UUID,
+	) (*StudentOutstandingResponse, error)
+	FindByID(
+		ctx context.Context,
+		authContext *security.AuthContext,
+		id uuid.UUID,
+	) (*model.StudentObligation, error)
+	Update(
+		ctx context.Context,
+		authContext *security.AuthContext,
+		id uuid.UUID,
+		req *StudentObligationUpdate,
+	) (*model.StudentObligation, error)
+	Delete(
+		ctx context.Context,
+		authContext *security.AuthContext,
+		id uuid.UUID,
+	) error
 }
 
 type StudentObligationRepository interface {
 	Create(
 		ctx context.Context,
 		studentObligation *model.StudentObligation,
+	) error
+	CreateBatch(
+		ctx context.Context,
+		studentObligations []model.StudentObligation,
 	) error
 	Paginate(
 		ctx context.Context,
@@ -47,6 +82,41 @@ type StudentObligationRepository interface {
 		filter *StudentObligationFilter,
 		authContext *security.AuthContext,
 	) (*shared.Page[model.StudentObligation], error)
+	SumOutstandingByStudentID(
+		ctx context.Context,
+		studentID uuid.UUID,
+	) (float64, error)
+	FindOutstandingByStudentID(
+		ctx context.Context,
+		studentID uuid.UUID,
+	) ([]model.StudentObligation, error)
+	FirstByID(
+		ctx context.Context,
+		id uuid.UUID,
+	) (*model.StudentObligation, error)
+	Update(
+		ctx context.Context,
+		id uuid.UUID,
+		req *StudentObligationUpdate,
+	) (int, error)
+	Delete(
+		ctx context.Context,
+		id uuid.UUID,
+	) (int, error)
+	HasPaymentAllocations(
+		ctx context.Context,
+		id uuid.UUID,
+	) (bool, error)
+	FindByIDs(
+		ctx context.Context,
+		ids []uuid.UUID,
+	) ([]model.StudentObligation, error)
+	UpdateSettlement(
+		ctx context.Context,
+		id uuid.UUID,
+		outstandingAmount float64,
+		status model.StudentObligationStatus,
+	) (int, error)
 	ExistsActiveByStudentIDAndPaymentProductIDAndPeriod(
 		ctx context.Context,
 		studentID uuid.UUID,
@@ -76,6 +146,17 @@ type StudentObligationCreate struct {
 	Notes            string    `json:"notes"`
 }
 
+type StudentObligationBulkCreate struct {
+	PaymentProductID uuid.UUID   `json:"payment_product_id" binding:"required"`
+	StudentIDs       []uuid.UUID `json:"student_ids" binding:"required"`
+	DueDate          time.Time   `json:"due_date" binding:"required"`
+}
+
+type StudentObligationUpdate struct {
+	DueDate *time.Time `json:"due_date"`
+	Notes   *string    `json:"notes"`
+}
+
 type StudentObligationResponse struct {
 	ID                uuid.UUID                     `json:"id"`
 	StudentID         uuid.UUID                     `json:"student_id"`
@@ -88,6 +169,12 @@ type StudentObligationResponse struct {
 	IssuedAt          time.Time                     `json:"issued_at"`
 	Status            model.StudentObligationStatus `json:"status"`
 	Notes             string                        `json:"notes"`
+}
+
+type StudentOutstandingResponse struct {
+	StudentID        uuid.UUID                   `json:"student_id"`
+	TotalOutstanding float64                     `json:"total_outstanding"`
+	Obligations      []StudentObligationResponse `json:"obligations"`
 }
 
 func NewStudentObligationResponse(model *model.StudentObligation) *StudentObligationResponse {

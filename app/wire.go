@@ -37,6 +37,7 @@ func IntializedApplication() *Application {
 		repoMaster.NewAuthRepositoryManagerMaster,
 
 		// Service
+		serviceMaster.NewParentStudentService,
 		serviceMaster.NewStudentService,
 		serviceMaster.NewTenantService,
 		serviceMaster.NewUserService,
@@ -46,11 +47,15 @@ func IntializedApplication() *Application {
 		repoPayment.NewAuthRepositoryManagerPayment,
 
 		// Handler
+		handlerPayment.NewPaymentAllocationHandler,
+		handlerPayment.NewPaymentOrderHandler,
 		handlerPayment.NewPaymentProductHandler,
 		handlerPayment.NewPaymentPolicyHandler,
 		handlerPayment.NewStudentObligationHandler,
 
 		// Service
+		servicePayment.NewPaymentAllocationService,
+		servicePayment.NewPaymentOrderService,
 		servicePayment.NewPaymentPolicyService,
 		servicePayment.NewPaymentProductService,
 		servicePayment.NewStudentObligationService,

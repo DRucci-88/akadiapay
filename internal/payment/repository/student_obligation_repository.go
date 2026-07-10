@@ -7,6 +7,7 @@ import (
 	"akadia/model"
 	"akadia/model/generated"
 	"context"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -30,6 +31,16 @@ func (r *studentObligationRepositoryImpl) Create(
 	studentObligation *model.StudentObligation,
 ) error {
 	return r.query.Create(ctx, studentObligation)
+}
+
+func (r *studentObligationRepositoryImpl) CreateBatch(
+	ctx context.Context,
+	studentObligations []model.StudentObligation,
+) error {
+	return r.db.
+		WithContext(ctx).
+		CreateInBatches(&studentObligations, 100).
+		Error
 }
 
 func (r *studentObligationRepositoryImpl) Paginate(
@@ -118,6 +129,137 @@ func (r *studentObligationRepositoryImpl) FindPaginate(
 	}
 
 	return r.Paginate(ctx, pageable, chain)
+}
+
+func (r *studentObligationRepositoryImpl) SumOutstandingByStudentID(
+	ctx context.Context,
+	studentID uuid.UUID,
+) (float64, error) {
+	type result struct {
+		Total float64
+	}
+
+	var temp result
+	if err := r.db.
+		WithContext(ctx).
+		Model(&model.StudentObligation{}).
+		Select("COALESCE(SUM(outstanding_amount), 0) AS total").
+		Where("student_id = ?", studentID).
+		Where("outstanding_amount > 0").
+		Where("status <> ?", model.StudentObligationStatusCancelled).
+		Scan(&temp).Error; err != nil {
+		return 0, err
+	}
+
+	return temp.Total, nil
+}
+
+func (r *studentObligationRepositoryImpl) FindOutstandingByStudentID(
+	ctx context.Context,
+	studentID uuid.UUID,
+) ([]model.StudentObligation, error) {
+	return r.query.
+		Where(generated.StudentObligation.StudentID.Eq(studentID)).
+		Where(generated.StudentObligation.OutstandingAmount.Gt(0)).
+		Where(generated.StudentObligation.Status.Neq(string(model.StudentObligationStatusCancelled))).
+		Find(ctx)
+}
+
+func (r *studentObligationRepositoryImpl) FirstByID(
+	ctx context.Context,
+	id uuid.UUID,
+) (*model.StudentObligation, error) {
+	studentObligation, err := r.query.
+		Where(generated.BaseModel.ID.Eq(id)).
+		First(ctx)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, shared.ErrStudentObligationNotFound
+		}
+		return nil, err
+	}
+
+	return &studentObligation, nil
+}
+
+func (r *studentObligationRepositoryImpl) Update(
+	ctx context.Context,
+	id uuid.UUID,
+	req *domain.StudentObligationUpdate,
+) (int, error) {
+	updates := shared.UpdateMap{}
+	updates.SetIfNotNil(generated.StudentObligation.DueDate.Column().Name, req.DueDate)
+	updates.SetIfNotNil(generated.StudentObligation.Notes.Column().Name, req.Notes)
+
+	rows, err := gorm.G[map[string]any](r.db).
+		Where(generated.BaseModel.ID.Eq(id)).
+		Select("*").
+		Omit("id", "created_at").
+		Updates(ctx, updates)
+	if rows == 0 {
+		return rows, shared.ErrStudentObligationNotFound
+	}
+
+	return rows, err
+}
+
+func (r *studentObligationRepositoryImpl) Delete(
+	ctx context.Context,
+	id uuid.UUID,
+) (int, error) {
+	result := r.db.
+		WithContext(ctx).
+		Where("id = ?", id).
+		Delete(&model.StudentObligation{})
+	if result.RowsAffected == 0 {
+		return int(result.RowsAffected), shared.ErrStudentObligationNotFound
+	}
+
+	return int(result.RowsAffected), result.Error
+}
+
+func (r *studentObligationRepositoryImpl) HasPaymentAllocations(
+	ctx context.Context,
+	id uuid.UUID,
+) (bool, error) {
+	total, err := gorm.G[model.PaymentAllocation](r.db).
+		Where(generated.PaymentAllocation.StudentObligationID.Eq(id)).
+		Count(ctx, "*")
+	if err != nil {
+		return false, err
+	}
+
+	return total > 0, nil
+}
+
+func (r *studentObligationRepositoryImpl) FindByIDs(
+	ctx context.Context,
+	ids []uuid.UUID,
+) ([]model.StudentObligation, error) {
+	return r.query.
+		Where("id IN ?", ids).
+		Find(ctx)
+}
+
+func (r *studentObligationRepositoryImpl) UpdateSettlement(
+	ctx context.Context,
+	id uuid.UUID,
+	outstandingAmount float64,
+	status model.StudentObligationStatus,
+) (int, error) {
+	rows, err := gorm.G[map[string]any](r.db).
+		Where(generated.BaseModel.ID.Eq(id)).
+		Select("*").
+		Omit("id", "created_at").
+		Updates(ctx, map[string]any{
+			generated.StudentObligation.OutstandingAmount.Column().Name: outstandingAmount,
+			generated.StudentObligation.Status.Column().Name:            status,
+		})
+	if rows == 0 {
+		return rows, shared.ErrStudentObligationNotFound
+	}
+
+	return rows, err
 }
 
 func (r *studentObligationRepositoryImpl) ExistsActiveByStudentIDAndPaymentProductIDAndPeriod(
