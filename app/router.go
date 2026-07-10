@@ -3,6 +3,7 @@ package app
 import (
 	"akadia/domain"
 	"akadia/internal/platform/middleware"
+	"akadia/model/generated"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +17,7 @@ func NewRouter(
 	r := gin.Default()
 
 	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "Berjalan Perfecto"})
+		c.JSON(200, gin.H{"status": "Berjalan Perfecto", "aaa": generated.PaymentPolicy.Code.Column().Name})
 	})
 
 	authApi := r.Group("/auth")
@@ -28,6 +29,12 @@ func NewRouter(
 	paymentPolicyApi.GET("", paymentPolicy.FindAll)
 	paymentPolicyApi.PUT("/:id", paymentPolicy.Update)
 	paymentPolicyApi.POST("", paymentPolicy.Create)
+
+	paymentProductApi := r.Group("/payment-product", m.JWT)
+	paymentProductApi.GET("/:id", paymentProduct.FindByID)
+	paymentProductApi.GET("", paymentProduct.FindAll)
+	paymentProductApi.PUT("/:id", paymentProduct.Update)
+	paymentProductApi.POST("", paymentProduct.Create)
 
 	return r
 }

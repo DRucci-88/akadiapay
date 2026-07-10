@@ -66,7 +66,7 @@ type PaymentPolicyRepository interface {
 		ctx context.Context,
 		id uuid.UUID,
 		tenantID uuid.UUID,
-		paymentPolicy *model.PaymentPolicy,
+		req *PaymentPolicyUpdate,
 	) (int, error)
 }
 

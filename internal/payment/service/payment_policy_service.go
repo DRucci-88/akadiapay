@@ -120,15 +120,7 @@ func (s *paymentPolicyServiceImpl) Update(
 		ctx,
 		id,
 		authContext.TenantID,
-		&model.PaymentPolicy{
-			Code:                *req.Code,
-			Name:                *req.Name,
-			Description:         *req.Description,
-			AllowPartial:        *req.AllowPartial,
-			MinimumAmount:       *req.MinimumAmount,
-			AllowOverPayment:    *req.AllowOverPayment,
-			AutoCloseObligation: *req.AutoCloseObligation,
-		},
+		req,
 	)
 
 	paymentPolicy, err := s.FirstByID(ctx, id)

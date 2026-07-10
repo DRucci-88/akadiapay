@@ -108,12 +108,25 @@ func (r *paymentPolicyRepositoryImpl) Update(
 	ctx context.Context,
 	id uuid.UUID,
 	tenantID uuid.UUID,
-	paymentPolicy *model.PaymentPolicy,
+	req *domain.PaymentPolicyUpdate,
 ) (int, error) {
-	rows, err := r.query.
+	updates := shared.UpdateMap{}
+
+	updates.SetIfNotNil(generated.PaymentPolicy.Code.Column().Name, req.Code)
+	updates.SetIfNotNil(generated.PaymentPolicy.Name.Column().Name, req.Name)
+	updates.SetIfNotNil(generated.PaymentPolicy.Description.Column().Name, req.Description)
+	updates.SetIfNotNil(generated.PaymentPolicy.AllowPartial.Column().Name, req.AllowPartial)
+	updates.SetIfNotNil(generated.PaymentPolicy.MinimumAmount.Column().Name, req.MinimumAmount)
+	updates.SetIfNotNil(generated.PaymentPolicy.MinimumPercentage.Column().Name, req.MinimumPercentage)
+	updates.SetIfNotNil(generated.PaymentPolicy.AllowOverPayment.Column().Name, req.AllowOverPayment)
+	updates.SetIfNotNil(generated.PaymentPolicy.AutoCloseObligation.Column().Name, req.AutoCloseObligation)
+
+	rows, err := gorm.G[map[string]any](r.db).
 		Where(generated.BaseModel.ID.Eq(id)).
 		Where(generated.PaymentPolicy.TenantID.Eq(tenantID)).
-		Updates(ctx, *paymentPolicy)
+		Select("*").
+		Omit("id", "created_at").
+		Updates(ctx, updates)
 	if rows == 0 {
 		return rows, shared.ErrPaymentPolicyNotFound
 	}

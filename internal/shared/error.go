@@ -33,5 +33,7 @@ var (
 	ErrPaymentPolicyMinimumPaymentRequired   = errors.New("Minimum Payment Required")
 
 	// Payment Product
-	ErrPaymentProductNotFound = errors.New("Payment Product not found")
+	ErrPaymentProductNotFound      = errors.New("Payment Product not found")
+	ErrPaymentProductPriceInvalid  = errors.New("Payment Product price invalid")
+	ErrPaymentProductStatusInvalid = errors.New("Payment Product status invalid")
 )
