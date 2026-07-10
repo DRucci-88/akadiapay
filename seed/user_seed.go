@@ -29,9 +29,21 @@ func SeedUsers(db *gorm.DB) error {
 			Status:      model.UserStatusActive,
 		},
 		{
+			Email:       "treasurer@sman1.id",
+			Password:    password,
+			DisplayName: "SMAN 1 Treasurer",
+			Status:      model.UserStatusActive,
+		},
+		{
 			Email:       "admin@harapan.id",
 			Password:    password,
 			DisplayName: "Harapan Bangsa Administrator",
+			Status:      model.UserStatusActive,
+		},
+		{
+			Email:       "finance@harapan.id",
+			Password:    password,
+			DisplayName: "Harapan Bangsa Finance Officer",
 			Status:      model.UserStatusActive,
 		},
 		{

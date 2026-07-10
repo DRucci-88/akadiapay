@@ -21,6 +21,11 @@ func SeedRoles(db *gorm.DB) error {
 			Description: ptr("School Administrator"),
 		},
 		{
+			Code:        model.RoleCodeTreasurer,
+			Name:        "Treasurer / Finance Officer",
+			Description: ptr("School finance officer"),
+		},
+		{
 			Code:        model.RoleCodeParent,
 			Name:        "Parent",
 			Description: ptr("Student Parent"),

@@ -37,6 +37,30 @@ func Run(db *gorm.DB) error {
 		return err
 	}
 
+	if err := SeedPaymentPolicies(db); err != nil {
+		return err
+	}
+
+	if err := SeedPaymentProducts(db); err != nil {
+		return err
+	}
+
+	if err := SeedStudentObligations(db); err != nil {
+		return err
+	}
+
+	if err := SeedPaymentOrders(db); err != nil {
+		return err
+	}
+
+	if err := SeedPaymentAllocations(db); err != nil {
+		return err
+	}
+
+	if err := SeedLedgerEntries(db); err != nil {
+		return err
+	}
+
 	log.Println("========================================")
 	log.Println("✅ Seeder Completed")
 	log.Println("========================================")

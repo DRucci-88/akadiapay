@@ -32,6 +32,12 @@ func SeedUserTenantRoles(db *gorm.DB) error {
 			IsDefault: true,
 		},
 		{
+			UserID:    seed.MustUserByEmail("treasurer@sman1.id").ID,
+			TenantID:  seed.MustTenantByCode("SMAN1").ID,
+			RoleID:    seed.MustRoleByCode(model.RoleCodeTreasurer).ID,
+			IsDefault: true,
+		},
+		{
 			UserID:    seed.MustUserByEmail("budi.parent@gmail.com").ID,
 			TenantID:  seed.MustTenantByCode("SMAN1").ID,
 			RoleID:    seed.MustRoleByCode(model.RoleCodeParent).ID,
@@ -57,6 +63,12 @@ func SeedUserTenantRoles(db *gorm.DB) error {
 			UserID:    seed.MustUserByEmail("admin@harapan.id").ID,
 			TenantID:  seed.MustTenantByCode("SMAHB").ID,
 			RoleID:    seed.MustRoleByCode(model.RoleCodeSchoolAdmin).ID,
+			IsDefault: true,
+		},
+		{
+			UserID:    seed.MustUserByEmail("finance@harapan.id").ID,
+			TenantID:  seed.MustTenantByCode("SMAHB").ID,
+			RoleID:    seed.MustRoleByCode(model.RoleCodeTreasurer).ID,
 			IsDefault: true,
 		},
 		{
